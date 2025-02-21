@@ -32,7 +32,6 @@ namespace Notebook.Hubs
                 return;
             }
 
-            existingPage.Title = page.Title;
             existingPage.Content = page.Content;
             _context.Pages.Update(existingPage);
             await _context.SaveChangesAsync();

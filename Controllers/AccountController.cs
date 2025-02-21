@@ -16,9 +16,9 @@ namespace Notebook.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User();
+            var user = new User() { UserName = model.UserName, Email = model.Email };
             var result = await _userManager.CreateAsync(user, "password");
             if (result.Succeeded)
             {

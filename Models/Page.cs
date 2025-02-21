@@ -3,7 +3,7 @@ namespace Notebook.Models
     public class Page
     {
         public Guid Id { get; set; }
-        public string Title { get; set; }
+        public int Index { get; set; }
         public string Content { get; set; }
         public string BookId { get; set; }
         public Book Book { get; set; }

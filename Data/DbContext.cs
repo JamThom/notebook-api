@@ -24,10 +24,6 @@ namespace Notebook.Data
                 .WithMany(u => u.Books)
                 .HasForeignKey(b => b.UserId);
 
-            builder.Entity<Page>()
-                .HasOne(p => p.Book)
-                .WithMany(b => b.Pages)
-                .HasForeignKey(p => p.BookId);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
