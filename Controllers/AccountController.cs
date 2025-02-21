@@ -4,6 +4,8 @@ using Notebook.Models;
 
 namespace Notebook.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -19,7 +21,7 @@ namespace Notebook.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             var user = new User() { UserName = model.UserName, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, "password");
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
