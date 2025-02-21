@@ -4,22 +4,38 @@ using Notebook.Models;
 
 namespace Notebook.Data
 {
-    public class DbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class DbContext : IdentityDbContext<User>
     {
-        public ISet<Page> Pages { get; set; }
-        public ISet<Book> Books { get; set; }
+        public DbSet<Page> Pages { get; set; }
+        public DbSet<Book> Books { get; set; }
+        public DbSet<User> Users { get; set; }
+
+        public DbContext(DbContextOptions<DbContext> options)
+            : base(options)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
             builder.Entity<Book>()
-                .HasOne(n => n.User)
-                .WithMany(u => u.Notebooks)
-                .HasForeignKey(n => n.UserId);
+                .HasOne(b => b.User)
+                .WithMany(u => u.Books)
+                .HasForeignKey(b => b.UserId);
+
+            builder.Entity<Page>()
+                .HasOne(p => p.Book)
+                .WithMany(b => b.Pages)
+                .HasForeignKey(p => p.BookId);
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=notebook.db");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite("Data Source=notebook.db");
+            }
         }
     }
 }

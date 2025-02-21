@@ -1,15 +1,22 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Notebook.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+builder.Services.AddDbContext<DbContext>(options =>
+{
+    options.UseSqlite("Data Source=notebook.db");
+});
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<DbContext>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -21,5 +28,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<PageHub>("/pagehub");
 
 app.Run();
