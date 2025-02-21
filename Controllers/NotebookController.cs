@@ -8,7 +8,7 @@ namespace Notebook.Controllers;
 
 [ApiController]
 [Authorize]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class BookController : ControllerBase
 {
 
