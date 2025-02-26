@@ -7,10 +7,10 @@ namespace Notebook.Hubs
 {
     public class PageHub : Hub
     {
-        private readonly DbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
 
-        public PageHub(DbContext context, UserManager<User> userManager)
+        public PageHub(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
             _userManager = userManager;

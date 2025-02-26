@@ -13,10 +13,10 @@ public class BookController : ControllerBase
 {
 
     private readonly ILogger<BookController> _logger;
-    private readonly DbContext _ctx;
+    private readonly ApplicationDbContext _ctx;
     private readonly UserManager<User> _userManager;
 
-    public BookController(ILogger<BookController> logger, DbContext context, UserManager<User> userManager)
+    public BookController(ILogger<BookController> logger, ApplicationDbContext context, UserManager<User> userManager)
     {
         _ctx = context;
         _logger = logger;

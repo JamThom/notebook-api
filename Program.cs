@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Notebook.Hubs;
+using Notebook.Models;
+using Notebook.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +13,12 @@ builder.Services.AddSwaggerGen();
 
 // Add SignalR
 builder.Services.AddSignalR();
-builder.Services.AddDbContext<DbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=notebook.db");
 });
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<DbContext>();
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
