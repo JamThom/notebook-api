@@ -20,12 +20,20 @@ namespace Notebook.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User() { UserName = model.UserName, Email = model.Email };
+            var user = new User() {
+                UserName = model.UserName,
+                Email = model.Email,
+                Id = Guid.NewGuid().ToString()
+            };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return Ok();
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
             }
             return BadRequest(result.Errors);
         }
