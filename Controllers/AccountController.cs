@@ -4,7 +4,7 @@ using Notebook.Models;
 
 namespace Notebook.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
