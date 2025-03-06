@@ -47,7 +47,7 @@ namespace Notebook.Controllers
             {
                 return BadRequest("User not found.");
             }
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 return Ok();
