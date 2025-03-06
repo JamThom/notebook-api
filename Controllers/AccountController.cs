@@ -20,7 +20,8 @@ namespace Notebook.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            var user = new User() {
+            var user = new User()
+            {
                 UserName = model.UserName,
                 Email = model.Email,
                 Id = Guid.NewGuid().ToString()
@@ -41,12 +42,32 @@ namespace Notebook.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
                 return Ok();
             }
-            return BadRequest();
+            else if (result.IsLockedOut)
+            {
+                return BadRequest("User account locked out.");
+            }
+            else if (result.IsNotAllowed)
+            {
+                return BadRequest("User is not allowed to sign in.");
+            }
+            else if (result.RequiresTwoFactor)
+            {
+                return BadRequest("Two-factor authentication is required.");
+            }
+            else
+            {
+                return BadRequest("Invalid login attempt.");
+            }
         }
 
         [HttpPost("logout")]
