@@ -4,7 +4,6 @@ using Notebook.Hubs;
 using Notebook.Models;
 using Notebook.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 

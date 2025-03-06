@@ -16,7 +16,7 @@ namespace Notebook.Hubs
             _userManager = userManager;
         }
 
-        public async Task UpdatePage(Page page)
+        public async Task UpdatePage(UpdatePageRequest page)
         {
             var user = await _userManager.GetUserAsync(Context.User);
             if (user == null)

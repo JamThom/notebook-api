@@ -1,10 +1,8 @@
 namespace Notebook.Models
 {
-    public class RegisterModel
+    public class LoginRequest
     {
         required public string Email { get; set; }
         required public string Password { get; set; }
-        required public string ConfirmPassword { get; set; }
-        required public string UserName { get; set; }
     }
 }

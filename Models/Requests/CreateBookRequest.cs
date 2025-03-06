@@ -1,6 +1,6 @@
 namespace Notebook.Models
 {
-    public class CreateBookRequestModel
+    public class CreateBookRequest
     {
         required public string Name { get; set; }
     }

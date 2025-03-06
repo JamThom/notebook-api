@@ -3,9 +3,6 @@ using Notebook.Data;
 using Notebook.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Notebook.Controllers
 {
@@ -24,7 +21,7 @@ namespace Notebook.Controllers
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<BooksResponseModel>>> GetBooks()
+        public async Task<ActionResult<IEnumerable<BooksResponse>>> GetBooks()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -34,7 +31,7 @@ namespace Notebook.Controllers
 
             var books = _ctx.Books.Where(b => b.UserId == user.Id).ToList();
 
-            var booksResponse = books.Select(b => new BooksResponseModel
+            var booksResponse = books.Select(b => new BooksResponse
             {
                 Id = b.Id,
                 Name = b.Name,
@@ -43,7 +40,7 @@ namespace Notebook.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<BookResponseModel>> GetBook(string id)
+        public async Task<ActionResult<BookResponse>> GetBook(string id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -57,23 +54,82 @@ namespace Notebook.Controllers
                 return NotFound();
             }
 
-            var bookResponse = new BookResponseModel
+            var bookResponse = new BookResponse
             {
                 Id = book.Id,
                 Name = book.Name,
-                Pages = book.Pages?.Select(p => new PageResponseModel
+                Pages = book.Pages?.Select(p => new PageResponse
                 {
                     Id = p.Id,
                     Index = p.Index,
                     Content = p.Content
-                }).ToHashSet() ?? new HashSet<PageResponseModel>()
+                }).ToList() ?? new List<PageResponse>()
             };
 
-            return Ok(book);
+            return Ok(bookResponse);
+        }
+
+        [HttpGet("{id}/pages/{pageId}")]
+        public async Task<ActionResult<PageResponse>> GetPage(string id, string pageId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var book = _ctx.Books.FirstOrDefault(b => b.Id == id && b.UserId == user.Id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var page = _ctx.Pages.FirstOrDefault(p => p.Id == pageId && p.BookId == book.Id);
+            if (page == null)
+            {
+                return NotFound();
+            }
+
+            var pageResponse = new PageResponse
+            {
+                Id = page.Id,
+                Index = page.Index,
+                Content = page.Content
+            };
+
+            return Ok(pageResponse);
+        }
+
+        [HttpPost("{id}/pages")]
+        public async Task<ActionResult<PageResponse>> PostPage(string id, CreatePageRequest page)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            var book = _ctx.Books.FirstOrDefault(b => b.Id == id && b.UserId == user.Id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            var createdPage = new Page
+            {
+                Id = Guid.NewGuid().ToString(),
+                Index = book.Pages.Count,
+                Content = page.Content,
+                BookId = book.Id
+            };
+
+            _ctx.Pages.Add(createdPage);
+            await _ctx.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetPage), new { id = createdPage.Id }, createdPage);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateBookRequestModel book)
+        public async Task<IActionResult> Post(CreateBookRequest book)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -90,7 +146,18 @@ namespace Notebook.Controllers
                 User = user
             };
 
+            var initialPage = new Page
+            {
+                Id = Guid.NewGuid().ToString(),
+                Index = 0,
+                Content = "Hello Worble",
+                BookId = createdBook.Id
+            };
+
+            createdBook.Pages.Add(initialPage);
+
             _ctx.Books.Add(createdBook);
+            _ctx.Pages.Add(initialPage);
             await _ctx.SaveChangesAsync();
             return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
         }
