@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace Notebook.Controllers
 {
