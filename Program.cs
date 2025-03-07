@@ -4,6 +4,7 @@ using Notebook.Hubs;
 using Notebook.Models;
 using Notebook.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Notebook.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,15 @@ builder.Services.AddCors(options =>
                    .AllowCredentials();
         });
 });
+
+builder.Services.AddScoped<GetBooksFeature>();
+builder.Services.AddScoped<GetBookFeature>();
+builder.Services.AddScoped<GetPageFeature>();
+builder.Services.AddScoped<CreatePageFeature>();
+builder.Services.AddScoped<CreateNotebookFeature>();
+builder.Services.AddScoped<LogoutFeature>();
+builder.Services.AddScoped<RegisterFeature>();
+builder.Services.AddScoped<LoginFeature>();
 
 var app = builder.Build();
 

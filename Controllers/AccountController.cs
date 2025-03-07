@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Models;
-using System;
-using System.Threading.Tasks;
+using Notebook.Features;
 
 namespace Notebook.Controllers
 {
@@ -10,28 +8,23 @@ namespace Notebook.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly RegisterFeature _registerFeature;
+        private readonly LoginFeature _loginFeature;
+        private readonly LogoutFeature _logoutFeature;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _registerFeature = registerFeature;
+            _loginFeature = loginFeature;
+            _logoutFeature = logoutFeature;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
-            var user = new User()
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                Id = Guid.NewGuid().ToString()
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _registerFeature.Execute(model);
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
                 return Ok();
             }
             foreach (var error in result.Errors)
@@ -44,12 +37,7 @@ namespace Notebook.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null)
-            {
-                return BadRequest("User not found.");
-            }
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _loginFeature.Execute(model);
             if (result.Succeeded)
             {
                 return Ok();
@@ -75,7 +63,7 @@ namespace Notebook.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await _logoutFeature.Execute();
             return Ok();
         }
     }

@@ -1,0 +1,35 @@
+using Microsoft.AspNetCore.Identity;
+using Notebook.Models;
+using System;
+using System.Threading.Tasks;
+
+namespace Notebook.Features
+{
+    public class RegisterFeature
+    {
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+
+        public RegisterFeature(UserManager<User> userManager, SignInManager<User> signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
+
+        public async Task<IdentityResult> Execute(RegisterRequest model)
+        {
+            var user = new User()
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                Id = Guid.NewGuid().ToString()
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+            }
+            return result;
+        }
+    }
+}
