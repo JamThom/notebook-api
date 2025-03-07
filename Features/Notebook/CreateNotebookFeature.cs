@@ -28,7 +28,8 @@ namespace Notebook.Features
                 Id = Guid.NewGuid().ToString(),
                 Index = 0,
                 Content = "",
-                BookId = createdBook.Id
+                BookId = createdBook.Id,
+                Book = createdBook
             };
 
             createdBook.Pages.Add(initialPage);

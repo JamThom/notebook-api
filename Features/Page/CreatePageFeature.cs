@@ -11,12 +11,18 @@ namespace Notebook.Features
         {
         }
 
-        public async Task<PageResponse> Execute(string bookId, CreatePageRequest page, User user)
+        public async Task<PageResponse> Execute(CreatePageRequest page, User user)
         {
-            var book = await _ctx.Books.FirstOrDefaultAsync(b => b.Id == bookId && b.UserId == user.Id);
+            var book = await _ctx.Books.Include(b => b.Pages).FirstOrDefaultAsync(b => b.Id == page.BookId && b.UserId == user.Id);
+
             if (book == null)
             {
                 return null;
+            }
+
+            if (book.Pages == null)
+            {
+                book.Pages = new HashSet<Page> {};
             }
 
             var createdPage = new Page
@@ -24,7 +30,8 @@ namespace Notebook.Features
                 Id = Guid.NewGuid().ToString(),
                 Index = book.Pages.Count,
                 Content = page.Content,
-                BookId = book.Id
+                BookId = book.Id,
+                Book = book
             };
 
             _ctx.Pages.Add(createdPage);

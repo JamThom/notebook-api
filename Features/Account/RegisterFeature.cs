@@ -22,7 +22,8 @@ namespace Notebook.Features
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                Id = Guid.NewGuid().ToString()
+                Id = Guid.NewGuid().ToString(),
+                Books = new HashSet<Book> {}
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)

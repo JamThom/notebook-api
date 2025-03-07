@@ -47,30 +47,6 @@ namespace Notebook.Controllers
             return Ok(bookResponse);
         }
 
-        [HttpGet("{id}/pages/{pageId}")]
-        public async Task<ActionResult<PageResponse>> GetPage(string id, string pageId)
-        {
-            var user = await GetAuthenticatedUserAsync();
-            var pageResponse = await _getPageFeature.Execute(pageId, user);
-            if (pageResponse == null)
-            {
-                return NotFound();
-            }
-            return Ok(pageResponse);
-        }
-
-        [HttpPost("{id}/pages")]
-        public async Task<ActionResult<PageResponse>> PostPage(string id, CreatePageRequest page)
-        {
-            var user = await GetAuthenticatedUserAsync();
-            var pageResponse = await _createPageFeature.Execute(id, page, user);
-            if (pageResponse == null)
-            {
-                return NotFound();
-            }
-            return CreatedAtAction(nameof(GetPage), new { id = pageResponse.Id }, pageResponse);
-        }
-
         [HttpPost]
         public async Task<IActionResult> Post(CreateBookRequest book)
         {

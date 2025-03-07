@@ -4,6 +4,6 @@ namespace Notebook.Models
 {
     public class User: IdentityUser
     {
-        public ISet<Book> Books { get; set; }
+        required public ISet<Book> Books { get; set; }
     }
 }

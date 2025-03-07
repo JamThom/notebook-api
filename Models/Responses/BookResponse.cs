@@ -2,8 +2,8 @@ namespace Notebook.Models
 {
     public class BookResponse
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<PageResponse> Pages { get; set; }
+        required public string Id { get; set; }
+        required public string Name { get; set; }
+        required public ICollection<PageResponse> Pages { get; set; }
     }
 }

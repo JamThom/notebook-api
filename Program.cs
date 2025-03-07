@@ -19,7 +19,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite("Data Source=notebook.db");
 });
-builder.Services.AddIdentity<User, IdentityRole>(options => {
+builder.Services.AddIdentity<User, IdentityRole>(options =>
+{
     options.User.RequireUniqueEmail = true;
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
@@ -52,9 +53,9 @@ builder.Services.AddCors(options =>
         builder =>
         {
             builder.WithOrigins("http://localhost:3000")
-                   .AllowAnyHeader()
-                   .AllowAnyMethod()
-                   .AllowCredentials();
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
@@ -66,8 +67,11 @@ builder.Services.AddScoped<CreateNotebookFeature>();
 builder.Services.AddScoped<LogoutFeature>();
 builder.Services.AddScoped<RegisterFeature>();
 builder.Services.AddScoped<LoginFeature>();
+builder.Services.AddScoped<DeletePageFeature>();
 
 var app = builder.Build();
+
+app.UseCors("AllowSpecificOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -76,26 +80,27 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowSpecificOrigins");
-
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapHub<PageHub>("/pagehub");
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Method == "OPTIONS")
+    if (context.Request.Method == "OPTIONS" || context.Request.Method == "POST")
     {
         context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
         context.Response.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-SignalR-User-Agent");
         context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        context.Response.StatusCode = 204;
-        return;
+        if (context.Request.Method == "OPTIONS")
+        {
+            context.Response.StatusCode = 204;
+            return;
+        }
     }
     await next();
 });
 
 app.MapControllers();
-app.MapHub<PageHub>("/pagehub");
 
 app.Run();

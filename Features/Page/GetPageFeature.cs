@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Notebook.Data;
 using Notebook.Models;
-using System.Threading.Tasks;
 
 namespace Notebook.Features
 {

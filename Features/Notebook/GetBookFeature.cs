@@ -18,6 +18,11 @@ namespace Notebook.Features
         public async Task<BookResponse> Execute(string id, User user)
         {
             var book = await _ctx.Books.FirstOrDefaultAsync(b => b.Id == id && b.UserId == user.Id);
+
+            var pages = await _ctx.Pages
+                .Include(p => p.Book)
+                .Where(p => p.Book.UserId == user.Id).ToListAsync();
+
             if (book == null)
             {
                 return null;
@@ -27,7 +32,7 @@ namespace Notebook.Features
             {
                 Id = book.Id,
                 Name = book.Name,
-                Pages = book.Pages?.Select(p => new PageResponse
+                Pages = pages?.Select(p => new PageResponse
                 {
                     Id = p.Id,
                     Index = p.Index,
