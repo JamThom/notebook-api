@@ -43,7 +43,7 @@ namespace Notebook.Hubs
                 _context.Pages.Update(existingPage);
                 await _context.SaveChangesAsync();
 
-                await Clients.All.SendAsync("UpdatePage", existingPage);
+                await Clients.All.SendAsync("UpdatePage", new PageResponse { Id = existingPage.Id, Content = existingPage.Content });
             }
             catch (Exception ex)
             {
