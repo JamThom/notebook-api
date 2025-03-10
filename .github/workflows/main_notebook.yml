@@ -33,6 +33,8 @@ jobs:
         run: dotnet ef database update --configuration Release
         env:
           PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
+          ASPNETCORE_ENVIRONMENT: Production
+          ConnectionStrings__DefaultConnection: ${{ secrets.DEFAULT_CONNECTION_STRING }}
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
