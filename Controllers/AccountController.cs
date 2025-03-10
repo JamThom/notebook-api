@@ -22,16 +22,20 @@ namespace Notebook.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
-            var result = await _registerFeature.Execute(model);
-            if (result.Succeeded)
-            {
-                return Ok();
+            try {
+                var result = await _registerFeature.Execute(model);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return BadRequest(result.Errors);
+            } catch (Exception e) {
+                return BadRequest(e.Message);
             }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-            return BadRequest(result.Errors);
         }
 
         [HttpPost("login")]

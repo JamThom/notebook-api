@@ -5,6 +5,7 @@ using Notebook.Models;
 using Notebook.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Notebook.Features;
+using Microsoft.AspNetCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,6 +71,22 @@ builder.Services.AddScoped<LoginFeature>();
 builder.Services.AddScoped<DeletePageFeature>();
 
 var app = builder.Build();
+
+// Add exception handling middleware
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        var error = context.Features.Get<IExceptionHandlerFeature>();
+        if (error != null)
+        {
+            var ex = error.Error;
+            await context.Response.WriteAsync(ex.Message);
+        }
+    });
+});
 
 app.UseCors("AllowSpecificOrigins");
 
