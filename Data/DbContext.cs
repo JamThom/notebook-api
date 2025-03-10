@@ -34,8 +34,7 @@ namespace Notebook.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=notebook.db");
-                // optionsBuilder.UseSqlServer("Server=magicnotebook.database.windows.net;Database=notebook;User Id=your-notebookgod;Password=H20isWater;");
+                optionsBuilder.UseSqlServer("Server=magicnotebook.database.windows.net;Database=notebook;User Id=your-notebookgod;Password=H20isWater;");
             }
         }
     }
