@@ -26,8 +26,13 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
+      - name: Install dotnet-ef tool
+        run: dotnet tool install --global dotnet-ef
+
       - name: Apply migrations
         run: dotnet ef database update --configuration Release
+        env:
+          PATH: ${{ env.PATH }}:/home/runner/.dotnet/tools
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
@@ -68,4 +73,3 @@ jobs:
           app-name: 'notebook'
           slot-name: 'Production'
           package: .
-          
