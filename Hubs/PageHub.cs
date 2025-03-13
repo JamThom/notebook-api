@@ -42,7 +42,12 @@ namespace Notebook.Hubs
 
                 _pageUpdates[page.Id] = (DateTime.UtcNow, page.Content);
 
-                _ = DebounceUpdatePage(page.Id, existingPage);
+
+                existingPage.Content = page.Content;
+                _context.Pages.Update(existingPage);
+                await _context.SaveChangesAsync();
+
+                await Clients.All.SendAsync("UpdatePage", new PageResponse { Id = existingPage.Id, Content = existingPage.Content });
             }
             catch (Exception ex)
             {
@@ -51,20 +56,5 @@ namespace Notebook.Hubs
             }
         }
 
-        private async Task DebounceUpdatePage(string pageId, Page existingPage)
-        {
-            await Task.Delay(1000);
-
-            if (_pageUpdates.TryGetValue(pageId, out var update) && (DateTime.UtcNow - update.lastUpdate).TotalMilliseconds >= 1000)
-            {
-                existingPage.Content = update.content;
-                _context.Pages.Update(existingPage);
-                await _context.SaveChangesAsync();
-
-                await Clients.All.SendAsync("UpdatePage", new PageResponse { Id = existingPage.Id, Content = existingPage.Content });
-
-                _pageUpdates.TryRemove(pageId, out _);
-            }
-        }
     }
 }

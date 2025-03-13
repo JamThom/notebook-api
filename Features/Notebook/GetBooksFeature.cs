@@ -31,7 +31,7 @@ namespace Notebook.Features
                     Id = p.Id,
                     Index = p.Index,
                     Content = p.Content
-                }).ToList()?? new List<PageResponse>()
+                }).ToList()?? []
             }).ToList();
         }
     }
