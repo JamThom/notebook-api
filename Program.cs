@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "https://notebook-fzfcc8czg0buhgcf.germanywestcentral-01.azurewebsites.net")
+            builder.WithOrigins("http://localhost:3000", "https://witty-sky-05918a11e.6.azurestaticapps.net")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -106,7 +106,7 @@ app.MapHub<PageHub>("/pagehub");
 
 app.Use(async (context, next) =>
 {
-    var allowedOrigins = new[] { "http://localhost:3000", "https://notebook-fzfcc8czg0buhgcf.germanywestcentral-01.azurewebsites.net" };
+    var allowedOrigins = new[] { "http://localhost:3000", "https://witty-sky-05918a11e.6.azurestaticapps.net" };
     var origin = context.Request.Headers["Origin"].ToString();
     if (allowedOrigins.Contains(origin))
     {
