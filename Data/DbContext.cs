@@ -29,13 +29,5 @@ namespace Notebook.Data
                 .WithMany(b => b.Pages)
                 .HasForeignKey(p => p.BookId);
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=magicnotebook.database.windows.net;Database=notebook;User Id=your-notebookgod;Password=H20isWater;");
-            }
-        }
     }
 }
