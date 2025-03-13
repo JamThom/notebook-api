@@ -26,15 +26,12 @@ namespace Notebook.Controllers
                 var result = await _registerFeature.Execute(model);
                 if (result.Succeeded)
                 {
-                    return Ok();
+                    return Ok(new { Message = "Registration successful" });
                 }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-                return BadRequest(result.Errors);
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new { Message = "Registration failed", Errors = errors });
             } catch (Exception e) {
-                return BadRequest(e.Message);
+                return BadRequest(new { Message = "An error occurred during registration", Error = e.Message });
             }
         }
 
@@ -44,23 +41,23 @@ namespace Notebook.Controllers
             var result = await _loginFeature.Execute(model);
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok(new { Message = "Login successful" });
             }
             else if (result.IsLockedOut)
             {
-                return BadRequest("User account locked out.");
+                return BadRequest(new { Message = "User account locked out" });
             }
             else if (result.IsNotAllowed)
             {
-                return BadRequest("User is not allowed to sign in.");
+                return BadRequest(new { Message = "User is not allowed to sign in" });
             }
             else if (result.RequiresTwoFactor)
             {
-                return BadRequest("Two-factor authentication is required.");
+                return BadRequest(new { Message = "Two-factor authentication is required" });
             }
             else
             {
-                return BadRequest("Invalid login attempt.");
+                return BadRequest(new { Message = "Invalid login attempt" });
             }
         }
 
@@ -68,7 +65,7 @@ namespace Notebook.Controllers
         public async Task<IActionResult> Logout()
         {
             await _logoutFeature.Execute();
-            return Ok();
+            return Ok(new { Message = "Logout successful" });
         }
     }
 }

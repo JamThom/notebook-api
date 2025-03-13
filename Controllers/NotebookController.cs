@@ -13,18 +13,16 @@ namespace Notebook.Controllers
     {
         private readonly GetBooksFeature _getBooksFeature;
         private readonly GetBookFeature _getBookFeature;
-        private readonly GetPageFeature _getPageFeature;
-        private readonly CreatePageFeature _createPageFeature;
         private readonly CreateNotebookFeature _createNotebookFeature;
+        private readonly DeleteNotebookFeature _deleteBookFeature;
 
-        public NotebookController(GetBooksFeature getBooksFeature, GetBookFeature getBookFeature, GetPageFeature getPageFeature, CreatePageFeature createPageFeature, CreateNotebookFeature createNotebookFeature, UserManager<User> userManager)
+        public NotebookController(GetBooksFeature getBooksFeature, GetBookFeature getBookFeature, CreateNotebookFeature createNotebookFeature, UserManager<User> userManager, DeleteNotebookFeature deleteBookFeature)
             : base(userManager)
         {
             _getBooksFeature = getBooksFeature;
             _getBookFeature = getBookFeature;
-            _getPageFeature = getPageFeature;
-            _createPageFeature = createPageFeature;
             _createNotebookFeature = createNotebookFeature;
+            _deleteBookFeature = deleteBookFeature;
         }
 
         [HttpGet()]
@@ -56,7 +54,20 @@ namespace Notebook.Controllers
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
+            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook.Id);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBook(string id)
+        {
+            var user = await GetAuthenticatedUserAsync();
+            var book = await _deleteBookFeature.Execute(id, user);
+            if (book == false)
+            {
+                return NotFound();
+            }
+            await _deleteBookFeature.Execute(id, user);
+            return NoContent();
         }
     }
 }
