@@ -34,6 +34,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.None;
     options.Events = new CookieAuthenticationEvents
     {
         OnRedirectToLogin = context =>
