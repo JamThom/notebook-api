@@ -73,6 +73,7 @@ builder.Services.AddScoped<LogoutFeature>();
 builder.Services.AddScoped<RegisterFeature>();
 builder.Services.AddScoped<LoginFeature>();
 builder.Services.AddScoped<DeletePageFeature>();
+builder.Services.AddScoped<DeleteNotebookFeature>();
 
 var app = builder.Build();
 
@@ -109,8 +110,8 @@ app.Use(async (context, next) =>
     var origin = context.Request.Headers["Origin"].ToString();
     if (allowedOrigins.Contains(origin))
     {
-        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
-        context.Response.Headers.Append("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+        context.Response.Headers["Access-Control-Allow-Origin"] = origin;
+        context.Response.Headers["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS, DELETE, PUT";
         context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-SignalR-User-Agent");
         context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
         if (context.Request.Method == "OPTIONS")
@@ -123,7 +124,7 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = 403;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync($"{{\"message\": \"Origin not allowed: {origin}\"}}");
+        await context.Response.WriteAsync($"{{\"message\": \"Origin is not allowed: {origin}\"}}");
         return;
     }
     await next();
