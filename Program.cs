@@ -57,7 +57,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000")
+            builder.WithOrigins("http://localhost:3000", "https://notebook-fzfcc8czg0buhgcf.germanywestcentral-01.azurewebsites.net")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -105,9 +105,11 @@ app.MapHub<PageHub>("/pagehub");
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Method == "OPTIONS" || context.Request.Method == "POST")
+    var allowedOrigins = new[] { "http://localhost:3000", "https://notebook-fzfcc8czg0buhgcf.germanywestcentral-01.azurewebsites.net" };
+    var origin = context.Request.Headers["Origin"].ToString();
+    if (allowedOrigins.Contains(origin))
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+        context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
         context.Response.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
         context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-SignalR-User-Agent");
         context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
