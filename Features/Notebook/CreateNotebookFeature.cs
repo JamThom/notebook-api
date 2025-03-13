@@ -12,7 +12,7 @@ namespace Notebook.Features
         public CreateNotebookFeature(UserManager<User> userManager, ApplicationDbContext ctx): base(userManager, ctx)
         {
         }
-        public async Task<Book> Execute(CreateBookRequest book, User user)
+        public async Task<BookResponse> Execute(CreateBookRequest book, User user)
         {
             var createdBook = new Book
             {
@@ -37,7 +37,15 @@ namespace Notebook.Features
             _ctx.Books.Add(createdBook);
             _ctx.Pages.Add(initialPage);
             await _ctx.SaveChangesAsync();
-            return createdBook;
+            return new BookResponse {
+                Id = createdBook.Id,
+                Name = createdBook.Name,
+                Pages = createdBook.Pages.Select(p => new PageResponse {
+                    Id = p.Id,
+                    Index = p.Index,
+                    Content = p.Content
+                }).ToList()
+            };
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Notebook.Controllers
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook.Id);
+            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
         }
 
         [HttpDelete("{id}")]
