@@ -21,6 +21,12 @@ namespace Notebook.Features
             {
                 Id = b.Id,
                 Name = b.Name,
+                Pages = b.Pages.Select(p => new PageResponse
+                {
+                    Id = p.Id,
+                    Index = p.Index,
+                    Content = p.Content
+                }).ToList()
             }).ToList();
         }
     }
