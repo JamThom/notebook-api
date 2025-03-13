@@ -124,7 +124,7 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = 403;
         context.Response.ContentType = "application/json";
-        await context.Response.WriteAsync($"{{\"message\": \"Origin is not allowed: {origin}\"}}");
+        await context.Response.WriteAsync($"{{\"message\": \"Origin is not swallowed: {origin}\"}}");
         return;
     }
     await next();
