@@ -22,7 +22,7 @@ namespace Notebook.Features
             {
                 return SignInResult.Failed;
             }
-            return await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
+            return await _signInManager.PasswordSignInAsync(user.UserName, model.Password, isPersistent: true, lockoutOnFailure: false);
         }
     }
 }
