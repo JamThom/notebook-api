@@ -109,10 +109,10 @@ app.Use(async (context, next) =>
     var origin = context.Request.Headers["Origin"].ToString();
     if (allowedOrigins.Contains(origin))
     {
-        context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-SignalR-User-Agent");
-        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+        context.Response.Headers.Append("Access-Control-Allow-Origin", origin);
+        context.Response.Headers.Append("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE, PUT");
+        context.Response.Headers.Append("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, X-SignalR-User-Agent");
+        context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
         if (context.Request.Method == "OPTIONS")
         {
             context.Response.StatusCode = 204;
