@@ -30,6 +30,12 @@ namespace Notebook.Controllers
         {
             var user = await GetAuthenticatedUserAsync();
             var booksResponse = await _getBooksFeature.Execute(user);
+
+            if (booksResponse == null)
+            {
+                return NotFound();
+            }
+
             return Ok(booksResponse);
         }
 

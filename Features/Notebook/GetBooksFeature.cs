@@ -17,16 +17,21 @@ namespace Notebook.Features
         {
             var books = await _ctx.Books.Where(b => b.UserId == user.Id).ToListAsync();
 
+            if (books == null)
+            {
+                return null;
+            }
+
             return books.Select(b => new BooksResponse
             {
                 Id = b.Id,
                 Name = b.Name,
-                Pages = b.Pages.Select(p => new PageResponse
+                Pages = b.Pages?.Select(p => new PageResponse
                 {
                     Id = p.Id,
                     Index = p.Index,
                     Content = p.Content
-                }).ToList()
+                }).ToList()?? new List<PageResponse>()
             }).ToList();
         }
     }
