@@ -6,8 +6,6 @@ using Notebook.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Notebook.Features;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,9 +118,12 @@ app.Use(async (context, next) =>
             context.Response.StatusCode = 204;
             return;
         }
-    } else {
+    }
+    else
+    {
         context.Response.StatusCode = 403;
-        context.Response.Body = new MemoryStream(Encoding.UTF8.GetBytes($"Origin not allowed: {origin}"));
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync($"{{\"message\": \"Origin not allowed: {origin}\"}}");
         return;
     }
     await next();
