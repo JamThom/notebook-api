@@ -23,11 +23,11 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Build with dotnet
-        run: dotnet build Notebook.csproj --configuration Release
-
       - name: Install dotnet-ef tool
         run: dotnet tool install --global dotnet-ef
+
+      - name: Build with dotnet
+        run: dotnet build Notebook.csproj --configuration Release
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
