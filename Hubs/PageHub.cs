@@ -25,6 +25,11 @@ namespace Notebook.Hubs
         {
             try
             {
+                if (Context.User == null)
+                {
+                    await Clients.Caller.SendAsync("Error", "User not authenticated");
+                    return;
+                }
                 var user = await _userManager.GetUserAsync(Context.User);
                 if (user == null)
                 {
@@ -48,7 +53,11 @@ namespace Notebook.Hubs
                 _context.Pages.Update(existingPage);
                 await _context.SaveChangesAsync();
 
-                await Clients.All.SendAsync("UpdatePage", new PageResponse { Id = existingPage.Id, Content = existingPage.Content });
+                await Clients.All.SendAsync("UpdatePage", new PageResponse {
+                    Id = existingPage.Id,
+                    Content = existingPage.Content,
+                    Index = existingPage.Index
+                });
             }
             catch (Exception ex)
             {

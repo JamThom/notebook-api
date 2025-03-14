@@ -18,7 +18,7 @@ namespace Notebook.Tests.Features
         }
 
         [Fact]
-        public async Task Execute_ReturnsBooks_ForUser()
+        public void Execute_ReturnsBooks_ForUser()
         {
             // // Arrange
             // var user = new User { Id = "user-id" };

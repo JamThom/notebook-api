@@ -4,12 +4,10 @@ using Notebook.Models.Requests;
 
 namespace Notebook.Features
 {
-    public class RegisterFeature: BaseAccountFeature
+    public class RegisterFeature(UserManager<User> userManager, SignInManager<User> signInManager)
     {
-
-        public RegisterFeature(UserManager<User> userManager, SignInManager<User> signInManager): base(userManager, signInManager, null)
-        {
-        }
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly SignInManager<User> _signInManager = signInManager;
 
         public async Task<User> Execute(RegisterRequest model)
         {

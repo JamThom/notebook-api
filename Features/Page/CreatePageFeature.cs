@@ -12,7 +12,7 @@ namespace Notebook.Features
         {
         }
 
-        public async Task<PageResponse> Execute(CreatePageRequest page, User user)
+        public async Task<PageResponse?> Execute(CreatePageRequest page, User user)
         {
             var book = await _ctx.Books.Include(b => b.Pages).FirstOrDefaultAsync(b => b.Id == page.BookId && b.UserId == user.Id);
 

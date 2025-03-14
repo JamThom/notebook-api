@@ -28,8 +28,23 @@ namespace Notebook.Features
                 return false;
             }
 
-            account.UserName = request.UserName;
-            account.Email = request.Email;
+            if (!string.IsNullOrEmpty(request.UserName))
+            {
+                var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
+                if (userWithSameUserName != null && userWithSameUserName.Id != user.Id)
+                {
+                    return false;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(request.Email))
+            {
+                var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
+                if (userWithSameEmail != null && userWithSameEmail.Id != user.Id)
+                {
+                    return false;
+                }
+            }
 
             await _ctx.SaveChangesAsync();
 

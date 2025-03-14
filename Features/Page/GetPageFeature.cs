@@ -14,7 +14,7 @@ namespace Notebook.Features
             _ctx = context;
         }
 
-        public async Task<PageResponse> Execute(string pageId, User user)
+        public async Task<PageResponse?> Execute(string pageId, User user)
         {
             var page = await _ctx.Pages.FirstOrDefaultAsync(p => p.Id == pageId);
             if (page == null || page.Book.UserId != user.Id)

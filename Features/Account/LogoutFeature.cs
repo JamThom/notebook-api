@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 
 namespace Notebook.Features
 {
-    public class LogoutFeature: BaseAccountFeature
+    public class LogoutFeature(SignInManager<User> signInManager)
     {
 
-        public LogoutFeature(SignInManager<User> signInManager): base(null, signInManager, null)
-        {}
+        private readonly SignInManager<User> _signInManager = signInManager;
 
         public async Task Execute()
         {

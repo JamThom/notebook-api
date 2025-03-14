@@ -64,8 +64,8 @@ namespace Notebook.Controllers
             return ItemResponse(account);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(UpdateAccountRequest account)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(UpdateAccountRequest account, string id)
         {
             var user = await GetAuthenticatedUserAsync();
             var accountHasUpdated = await _updateAccountFeature.Execute(account, user);
@@ -73,7 +73,7 @@ namespace Notebook.Controllers
             {
                 return NotFound(new ErrorResponse { Message = "Account not found" });
             }
-            return UpdatedResponse(account.Id, "Account updated");
+            return UpdatedResponse(id, "Account updated");
         }
 
         [HttpPost("logout")]

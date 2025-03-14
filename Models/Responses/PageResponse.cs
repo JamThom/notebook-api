@@ -2,8 +2,8 @@ namespace Notebook.Models.Responses
 {
     public class PageResponse
     {
-        public string Id { get; set; }
-        public int Index { get; set; }
-        public string Content { get; set; }
+        required public string Id { get; set; }
+        required public int Index { get; set; }
+        required public string Content { get; set; }
     }
 }

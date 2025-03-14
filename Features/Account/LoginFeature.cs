@@ -4,13 +4,10 @@ using Notebook.Models.Requests;
 
 namespace Notebook.Features
 {
-    public class LoginFeature: BaseAccountFeature
+    public class LoginFeature(UserManager<User> userManager, SignInManager<User> signInManager)
     {
-
-        public LoginFeature(UserManager<User> userManager, SignInManager<User> signInManager): base(userManager, signInManager, null)
-        {
-        }
-
+        private readonly UserManager<User> _userManager = userManager;
+        private readonly SignInManager<User> _signInManager = signInManager;
         public async Task<SignInResult> Execute(LoginRequest model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);

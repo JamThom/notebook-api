@@ -13,7 +13,7 @@ namespace Notebook.Features
         {
         }
 
-        public async Task<BookResponse> Execute(string id, User user)
+        public async Task<BookResponse?> Execute(string id, User user)
         {
             var book = await _ctx.Books.FirstOrDefaultAsync(b => b.Id == id && b.UserId == user.Id);
 

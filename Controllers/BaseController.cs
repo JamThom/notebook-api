@@ -46,17 +46,17 @@ namespace Notebook.Controllers
         public class ErrorResponse
         {
             required public string Message { get; set; }
-            public string Error { get; set; }
+            public string? Error { get; set; }
         }
 
         private class GetItemResponse<T>
         {
-            public T Item { get; set; }
+            public required T Item { get; set; }
         }
 
         private class GetItemsResponse<T>
         {
-            public List<T> Items { get; set; }
+            public required List<T> Items { get; set; }
         }
     }
 }

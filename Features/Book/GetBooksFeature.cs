@@ -13,7 +13,7 @@ namespace Notebook.Features
         {
         }
 
-        public async Task<List<BooksResponse>> Execute(User user)
+        public async Task<List<BooksResponse>?> Execute(User user)
         {
             var books = await _ctx.Books.Where(b => b.UserId == user.Id).ToListAsync();
 
