@@ -5,13 +5,11 @@ using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {
-    public class GetAccountFeature
+    public class GetAccountFeature: BaseAccountFeature
     {
-        private readonly ApplicationDbContext _ctx;
 
-        public GetAccountFeature(ApplicationDbContext context)
+        public GetAccountFeature(ApplicationDbContext context): base(null, null, context)
         {
-            _ctx = context;
         }
 
         public async Task<AccountResponse> Execute(User user)

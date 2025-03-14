@@ -1,5 +1,3 @@
-using Domain.Base;
-
 namespace Notebook.Models.Responses
 {
     public class BooksResponse

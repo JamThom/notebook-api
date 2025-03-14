@@ -11,20 +11,12 @@ namespace Notebook.Controllers
     [ApiController]
     [Authorize]
     [Route("api/pages")]
-    public class PageController : BaseController
+    public class PageController(GetPageFeature getPageFeature, CreatePageFeature createPageFeature, UserManager<User> userManager, DeletePageFeature deletePageFeature) : BaseController(userManager)
     {
 
-        private readonly GetPageFeature _getPageFeature;
-        private readonly CreatePageFeature _createPageFeature;
-        private readonly DeletePageFeature _deletePageFeature;
-
-        public PageController(GetPageFeature getPageFeature, CreatePageFeature createPageFeature, UserManager<User> userManager, DeletePageFeature deletePageFeature)
-            : base(userManager)
-        {
-            _getPageFeature = getPageFeature;
-            _createPageFeature = createPageFeature;
-            _deletePageFeature = deletePageFeature;
-        }
+        private readonly GetPageFeature _getPageFeature = getPageFeature;
+        private readonly CreatePageFeature _createPageFeature = createPageFeature;
+        private readonly DeletePageFeature _deletePageFeature = deletePageFeature;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<PageResponse>> GetPage(string id)
@@ -35,7 +27,7 @@ namespace Notebook.Controllers
             {
                 return NotFound();
             }
-            return Ok(pageResponse);
+            return ItemResponse(pageResponse);
         }
 
         [HttpPost]
@@ -47,7 +39,7 @@ namespace Notebook.Controllers
             {
                 return NotFound();
             }
-            return CreatedAtAction(nameof(GetPage), new { id = pageResponse.Id }, pageResponse);
+            return UpdatedResponse(pageResponse.Id, "Page created");
         }
 
         [HttpDelete("{id}")]
@@ -59,7 +51,7 @@ namespace Notebook.Controllers
             {
                 return NotFound();
             }
-            return NoContent();
+            return UpdatedResponse(id, "Page deleted");
         }
     }
 }

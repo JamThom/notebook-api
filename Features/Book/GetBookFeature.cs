@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Data;
 using Notebook.Models;
@@ -5,13 +6,11 @@ using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {
-    public class GetBookFeature
+    public class GetBookFeature: BaseFeature
     {
-        private readonly ApplicationDbContext _ctx;
 
-        public GetBookFeature(ApplicationDbContext context)
+        public GetBookFeature(ApplicationDbContext context) : base(context)
         {
-            _ctx = context;
         }
 
         public async Task<BookResponse> Execute(string id, User user)

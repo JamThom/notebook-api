@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Data;
 using Notebook.Models;
@@ -5,16 +6,14 @@ using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {
-    public class GetBooksFeature
+    public class GetBooksFeature: BaseFeature
     {
-        private readonly ApplicationDbContext _ctx;
 
-        public GetBooksFeature(ApplicationDbContext context)
+        public GetBooksFeature(ApplicationDbContext context) : base(context)
         {
-            _ctx = context;
         }
 
-        public async Task<IEnumerable<BooksResponse>> Execute(User user)
+        public async Task<List<BooksResponse>> Execute(User user)
         {
             var books = await _ctx.Books.Where(b => b.UserId == user.Id).ToListAsync();
 

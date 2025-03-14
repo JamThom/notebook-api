@@ -10,27 +10,27 @@ namespace Notebook.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/notebooks")]
-    public class NotebookController : BaseController
+    [Route("api/books")]
+    public class BookController : BaseController
     {
         private readonly GetBooksFeature _getBooksFeature;
         private readonly GetBookFeature _getBookFeature;
-        private readonly CreateNotebookFeature _createNotebookFeature;
-        private readonly DeleteNotebookFeature _deleteBookFeature;
-        private readonly UpdateNotebookFeature _updateBookFeature;
+        private readonly CreateBookFeature _createBookFeature;
+        private readonly DeleteBookFeature _deleteBookFeature;
+        private readonly UpdateBookFeature _updateBookFeature;
 
-        public NotebookController(GetBooksFeature getBooksFeature, GetBookFeature getBookFeature, CreateNotebookFeature createNotebookFeature, UserManager<User> userManager, DeleteNotebookFeature deleteBookFeature, UpdateNotebookFeature updateBookFeature)
+        public BookController(GetBooksFeature getBooksFeature, GetBookFeature getBookFeature, CreateBookFeature createBookFeature, UserManager<User> userManager, DeleteBookFeature deleteBookFeature, UpdateBookFeature updateBookFeature)
             : base(userManager)
         {
-            _updateBookFeature = updateBookFeature;
             _getBooksFeature = getBooksFeature;
             _getBookFeature = getBookFeature;
-            _createNotebookFeature = createNotebookFeature;
+            _createBookFeature = createBookFeature;
             _deleteBookFeature = deleteBookFeature;
+            _updateBookFeature = updateBookFeature;
         }
 
         [HttpGet()]
-        public async Task<ActionResult<IEnumerable<BooksResponse>>> GetBooks()
+        public async Task<ActionResult<List<BooksResponse>>> GetBooks()
         {
             var user = await GetAuthenticatedUserAsync();
             var booksResponse = await _getBooksFeature.Execute(user);
@@ -44,7 +44,7 @@ namespace Notebook.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(string id, UpdateNotebookRequest book)
+        public async Task<IActionResult> Put(string id, UpdateBookRequest book)
         {
             var user = await GetAuthenticatedUserAsync();
             var updatedBook = await _updateBookFeature.Execute(id, book, user);
@@ -52,7 +52,7 @@ namespace Notebook.Controllers
             {
                 return NotFound();
             }
-            return Ok(updatedBook);
+            return UpdatedResponse(id, "Book updated");
         }
 
         [HttpGet("{id}")]
@@ -64,19 +64,19 @@ namespace Notebook.Controllers
             {
                 return NotFound();
             }
-            return Ok(bookResponse);
+            return ItemResponse(bookResponse);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(CreateBookRequest book)
         {
             var user = await GetAuthenticatedUserAsync();
-            var createdBook = await _createNotebookFeature.Execute(book, user);
+            var createdBook = await _createBookFeature.Execute(book, user);
             if (createdBook == null)
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(GetBook), new { id = createdBook.Id }, createdBook);
+            return UpdatedResponse(createdBook.Id, "Book created");
         }
 
         [HttpDelete("{id}")]
@@ -89,7 +89,7 @@ namespace Notebook.Controllers
                 return NotFound();
             }
             await _deleteBookFeature.Execute(id, user);
-            return NoContent();
+            return UpdatedResponse(id, "Book deleted");
         }
     }
 }

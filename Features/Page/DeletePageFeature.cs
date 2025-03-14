@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Notebook.Features
 {
-    public class DeletePageFeature : BaseNotebookFeature
+    public class DeletePageFeature : BaseFeature
     {
-        public DeletePageFeature(UserManager<User> userManager, ApplicationDbContext ctx): base(userManager, ctx)
+        public DeletePageFeature(ApplicationDbContext ctx): base(ctx)
         {
         }
 

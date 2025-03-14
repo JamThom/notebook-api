@@ -4,15 +4,11 @@ using Notebook.Models.Requests;
 
 namespace Notebook.Features
 {
-    public class LoginFeature
+    public class LoginFeature: BaseAccountFeature
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
 
-        public LoginFeature(UserManager<User> userManager, SignInManager<User> signInManager)
+        public LoginFeature(UserManager<User> userManager, SignInManager<User> signInManager): base(userManager, signInManager, null)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         public async Task<SignInResult> Execute(LoginRequest model)

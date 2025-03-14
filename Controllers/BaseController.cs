@@ -22,5 +22,41 @@ namespace Notebook.Controllers
             }
             return user;
         }
+
+        protected ActionResult ItemResponse<T>(T item) {
+            return Ok(new GetItemResponse<T> { Item = item });
+        }
+
+
+
+        protected ActionResult ItemsResponse<T>(List<T> items) {
+            return Ok(new GetItemsResponse<T> { Items = items });
+        }
+
+        protected ActionResult UpdatedResponse(string id, string message) {
+            return Ok(new Updated { Id = id, Message = message });
+        }
+
+        private class Updated
+        {
+            required public string Id { get; set; }
+            required public string Message { get; set; }
+        }
+
+        public class ErrorResponse
+        {
+            required public string Message { get; set; }
+            public string Error { get; set; }
+        }
+
+        private class GetItemResponse<T>
+        {
+            public T Item { get; set; }
+        }
+
+        private class GetItemsResponse<T>
+        {
+            public List<T> Items { get; set; }
+        }
     }
 }

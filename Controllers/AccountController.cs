@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Features;
 using Notebook.Models;
@@ -7,32 +8,20 @@ namespace Notebook.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, GetAccountFeature getAccountFeature, UserManager<User> userManager, UpdateAccountFeature updateAccountFeature) : BaseController(userManager)
     {
-        private readonly RegisterFeature _registerFeature;
-        private readonly LoginFeature _loginFeature;
-        private readonly LogoutFeature _logoutFeature;
-        private readonly GetAccountFeature _getAccountFeature;
-
-        public AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, GetAccountFeature getAccountFeature)
-        {
-            _registerFeature = registerFeature;
-            _loginFeature = loginFeature;
-            _getAccountFeature = getAccountFeature;
-            _logoutFeature = logoutFeature;
-        }
+        private readonly RegisterFeature _registerFeature = registerFeature;
+        private readonly LoginFeature _loginFeature = loginFeature;
+        private readonly LogoutFeature _logoutFeature = logoutFeature;
+        private readonly GetAccountFeature _getAccountFeature = getAccountFeature;
+        private readonly UpdateAccountFeature _updateAccountFeature = updateAccountFeature;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
             try {
-                var result = await _registerFeature.Execute(model);
-                if (result.Succeeded)
-                {
-                    return Ok(new { Message = "Registration successful" });
-                }
-                var errors = result.Errors.Select(e => e.Description).ToList();
-                return BadRequest(new { Message = "Registration failed", Errors = errors });
+                var user = await _registerFeature.Execute(model);
+                return UpdatedResponse(user.Id, "Registration successful");
             } catch (Exception e) {
                 return BadRequest(new { Message = "An error occurred during registration", Error = e.Message });
             }
@@ -65,14 +54,26 @@ namespace Notebook.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(User user)
+        public async Task<IActionResult> Get(User user)
         {
-            var account = _getAccountFeature.Execute(user);
+            var account = await _getAccountFeature.Execute(user);
             if (account == null)
             {
                 return NotFound(new { Message = "Account not found" });
             }
-            return Ok(account);
+            return ItemResponse(account);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(UpdateAccountRequest account)
+        {
+            var user = await GetAuthenticatedUserAsync();
+            var accountHasUpdated = await _updateAccountFeature.Execute(account, user);
+            if (!accountHasUpdated)
+            {
+                return NotFound(new ErrorResponse { Message = "Account not found" });
+            }
+            return UpdatedResponse(account.Id, "Account updated");
         }
 
         [HttpPost("logout")]

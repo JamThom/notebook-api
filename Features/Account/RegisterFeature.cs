@@ -4,18 +4,14 @@ using Notebook.Models.Requests;
 
 namespace Notebook.Features
 {
-    public class RegisterFeature
+    public class RegisterFeature: BaseAccountFeature
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
 
-        public RegisterFeature(UserManager<User> userManager, SignInManager<User> signInManager)
+        public RegisterFeature(UserManager<User> userManager, SignInManager<User> signInManager): base(userManager, signInManager, null)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
         }
 
-        public async Task<IdentityResult> Execute(RegisterRequest model)
+        public async Task<User> Execute(RegisterRequest model)
         {
             var user = new User()
             {
@@ -29,7 +25,11 @@ namespace Notebook.Features
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
             }
-            return result;
+            if (!result.Succeeded)
+            {
+                throw new Exception("Failed to create user");
+            }
+            return user;
         }
     }
 }

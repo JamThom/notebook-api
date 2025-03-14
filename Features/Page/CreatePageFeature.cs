@@ -1,15 +1,14 @@
 using Notebook.Data;
 using Notebook.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Models.Requests;
 using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {
-    public class CreatePageFeature : BaseNotebookFeature
+    public class CreatePageFeature : BaseFeature
     {
-        public CreatePageFeature(UserManager<User> userManager, ApplicationDbContext ctx): base(userManager, ctx)
+        public CreatePageFeature(ApplicationDbContext ctx): base(ctx)
         {
         }
 

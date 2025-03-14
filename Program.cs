@@ -68,13 +68,13 @@ builder.Services.AddScoped<GetBooksFeature>();
 builder.Services.AddScoped<GetBookFeature>();
 builder.Services.AddScoped<GetPageFeature>();
 builder.Services.AddScoped<CreatePageFeature>();
-builder.Services.AddScoped<CreateNotebookFeature>();
+builder.Services.AddScoped<CreateBookFeature>();
 builder.Services.AddScoped<LogoutFeature>();
 builder.Services.AddScoped<RegisterFeature>();
 builder.Services.AddScoped<LoginFeature>();
 builder.Services.AddScoped<DeletePageFeature>();
-builder.Services.AddScoped<DeleteNotebookFeature>();
-builder.Services.AddScoped<UpdateNotebookFeature>();
+builder.Services.AddScoped<DeleteBookFeature>();
+builder.Services.AddScoped<UpdateBookFeature>();
 builder.Services.AddScoped<GetAccountFeature>();
 
 var app = builder.Build();

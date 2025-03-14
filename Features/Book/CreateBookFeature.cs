@@ -1,17 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
 using Notebook.Data;
 using Notebook.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Notebook.Features;
 using Notebook.Models.Requests;
 using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {
-    public class CreateNotebookFeature : BaseNotebookFeature
+    public class CreateBookFeature : BaseFeature
     {
-        public CreateNotebookFeature(UserManager<User> userManager, ApplicationDbContext ctx): base(userManager, ctx)
+        public CreateBookFeature(ApplicationDbContext ctx): base(ctx)
         {
         }
         public async Task<BookResponse> Execute(CreateBookRequest book, User user)
