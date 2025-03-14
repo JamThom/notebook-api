@@ -4,6 +4,8 @@ using Notebook.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Notebook.Features;
+using Notebook.Models.Requests;
+using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {

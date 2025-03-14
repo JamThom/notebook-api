@@ -2,6 +2,8 @@ using Notebook.Data;
 using Notebook.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Notebook.Models.Requests;
+using Notebook.Models.Responses;
 
 namespace Notebook.Features
 {

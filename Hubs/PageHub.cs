@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Notebook.Data;
 using Notebook.Models;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
+using Notebook.Models.Requests;
+using Notebook.Models.Responses;
 
 namespace Notebook.Hubs
 {

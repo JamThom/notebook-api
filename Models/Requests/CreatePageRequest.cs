@@ -1,4 +1,4 @@
-namespace Notebook.Models
+namespace Notebook.Models.Requests
 {
     public class CreatePageRequest
     {

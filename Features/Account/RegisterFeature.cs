@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Notebook.Models;
-using System;
-using System.Threading.Tasks;
+using Notebook.Models.Requests;
 
 namespace Notebook.Features
 {

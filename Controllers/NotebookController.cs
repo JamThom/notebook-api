@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Models;
+using Notebook.Models.Requests;
+using Notebook.Models.Responses;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Notebook.Features;
@@ -15,10 +17,12 @@ namespace Notebook.Controllers
         private readonly GetBookFeature _getBookFeature;
         private readonly CreateNotebookFeature _createNotebookFeature;
         private readonly DeleteNotebookFeature _deleteBookFeature;
+        private readonly UpdateNotebookFeature _updateBookFeature;
 
-        public NotebookController(GetBooksFeature getBooksFeature, GetBookFeature getBookFeature, CreateNotebookFeature createNotebookFeature, UserManager<User> userManager, DeleteNotebookFeature deleteBookFeature)
+        public NotebookController(GetBooksFeature getBooksFeature, GetBookFeature getBookFeature, CreateNotebookFeature createNotebookFeature, UserManager<User> userManager, DeleteNotebookFeature deleteBookFeature, UpdateNotebookFeature updateBookFeature)
             : base(userManager)
         {
+            _updateBookFeature = updateBookFeature;
             _getBooksFeature = getBooksFeature;
             _getBookFeature = getBookFeature;
             _createNotebookFeature = createNotebookFeature;
@@ -37,6 +41,18 @@ namespace Notebook.Controllers
             }
 
             return Ok(booksResponse);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(string id, UpdateNotebookRequest book)
+        {
+            var user = await GetAuthenticatedUserAsync();
+            var updatedBook = await _updateBookFeature.Execute(id, book, user);
+            if (updatedBook == false)
+            {
+                return NotFound();
+            }
+            return Ok(updatedBook);
         }
 
         [HttpGet("{id}")]

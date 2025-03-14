@@ -1,6 +1,6 @@
 using Domain.Base;
 
-namespace Notebook.Models
+namespace Notebook.Models.Responses
 {
     public class BooksResponse
     {

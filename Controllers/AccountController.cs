@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Models;
 using Notebook.Features;
+using Notebook.Models.Requests;
+using Notebook.Models.Responses;
 
 namespace Notebook.Controllers
 {

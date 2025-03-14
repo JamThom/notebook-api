@@ -1,4 +1,4 @@
-namespace Notebook.Models
+namespace Notebook.Models.Responses
 {
     public class PageResponse
     {
