@@ -20,7 +20,8 @@ namespace Notebook.Features
 
             var pages = await _ctx.Pages
                 .Include(p => p.Book)
-                .Where(p => p.Book.UserId == user.Id).ToListAsync();
+                .Where(p => p.Book.UserId == user.Id && p.BookId == id)
+                .ToListAsync();
 
             if (book == null)
             {
