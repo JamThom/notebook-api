@@ -23,16 +23,21 @@ namespace Notebook.Features
                 return null;
             }
 
+            var pages = await _ctx.Pages
+                .Include(p => p.Book)
+                .Where(p => p.Book.UserId == user.Id)
+                .ToListAsync();
+
             return books.Select(b => new BooksResponse
             {
                 Id = b.Id,
                 Name = b.Name,
-                Pages = b.Pages?.Select(p => new PageResponse
+                Pages = pages?.Where(p => p.BookId == b.Id).Select(p => new PageResponse
                 {
                     Id = p.Id,
                     Index = p.Index,
                     Content = p.Content
-                }).ToList()?? []
+                }).ToList() ?? new List<PageResponse>()
             }).ToList();
         }
     }
