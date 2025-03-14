@@ -30,11 +30,15 @@ namespace Notebook.Features
                 Book = createdBook
             };
 
-            createdBook.Pages.Add(initialPage);
+
+            var createdPage = _ctx.Pages.Add(initialPage).Entity;
+
+            createdBook.Pages.Add(createdPage);
 
             _ctx.Books.Add(createdBook);
-            _ctx.Pages.Add(initialPage);
+
             await _ctx.SaveChangesAsync();
+
             return new BookResponse {
                 Id = createdBook.Id,
                 Name = createdBook.Name,

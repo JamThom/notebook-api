@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Notebook.Features;
 using Notebook.Models;
 using Notebook.Models.Requests;
+using Notebook.Models.Responses;
 
 namespace Notebook.Controllers
 {
@@ -53,27 +54,31 @@ namespace Notebook.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get(User user)
+        [HttpGet()]
+        public async Task<IActionResult> Get()
         {
-            var account = await _getAccountFeature.Execute(user);
+            var account = await GetAuthenticatedUserAsync();
             if (account == null)
             {
                 return NotFound(new { Message = "Account not found" });
             }
-            return ItemResponse(account);
+            return ItemResponse(new AccountResponse { Id = account.Id, UserName = account.UserName, Email = account.Email });
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(UpdateAccountRequest account, string id)
+        [HttpPut]
+        public async Task<IActionResult> Update(UpdateAccountRequest account)
         {
             var user = await GetAuthenticatedUserAsync();
+            if (user == null)
+            {
+                return NotFound(new { Message = "Account not found" });
+            }
             var accountHasUpdated = await _updateAccountFeature.Execute(account, user);
             if (!accountHasUpdated)
             {
                 return NotFound(new ErrorResponse { Message = "Account not found" });
             }
-            return UpdatedResponse(id, "Account updated");
+            return UpdatedResponse(user.Id, "Account updated");
         }
 
         [HttpPost("logout")]

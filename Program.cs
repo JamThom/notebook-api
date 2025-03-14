@@ -76,6 +76,7 @@ builder.Services.AddScoped<DeletePageFeature>();
 builder.Services.AddScoped<DeleteBookFeature>();
 builder.Services.AddScoped<UpdateBookFeature>();
 builder.Services.AddScoped<GetAccountFeature>();
+builder.Services.AddScoped<UpdateAccountFeature>();
 
 var app = builder.Build();
 

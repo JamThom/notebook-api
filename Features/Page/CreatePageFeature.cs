@@ -23,7 +23,7 @@ namespace Notebook.Features
 
             if (book.Pages == null)
             {
-                book.Pages = new HashSet<Page> {};
+                book.Pages = new HashSet<Page>();
             }
 
             var createdPage = new Page
@@ -34,6 +34,8 @@ namespace Notebook.Features
                 BookId = book.Id,
                 Book = book
             };
+
+            book.Pages.Add(createdPage);
 
             _ctx.Pages.Add(createdPage);
             await _ctx.SaveChangesAsync();

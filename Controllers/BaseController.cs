@@ -13,13 +13,10 @@ namespace Notebook.Controllers
             _userManager = userManager;
         }
 
-        protected async Task<User> GetAuthenticatedUserAsync()
+        protected async Task<User?> GetAuthenticatedUserAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                throw new UnauthorizedAccessException("User not found");
-            }
+            
             return user;
         }
 
@@ -29,7 +26,7 @@ namespace Notebook.Controllers
 
 
 
-        protected ActionResult ItemsResponse<T>(List<T> items) {
+        protected ActionResult ListResponse<T>(List<T> items) {
             return Ok(new GetItemsResponse<T> { Items = items });
         }
 

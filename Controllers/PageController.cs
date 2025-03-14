@@ -22,6 +22,7 @@ namespace Notebook.Controllers
         public async Task<ActionResult<PageResponse>> GetPage(string id)
         {
             var user = await GetAuthenticatedUserAsync();
+            if (user == null) return NotFound(new { Message = "Account not found" });
             var pageResponse = await _getPageFeature.Execute(id, user);
             if (pageResponse == null)
             {
@@ -34,6 +35,7 @@ namespace Notebook.Controllers
         public async Task<ActionResult<PageResponse>> Post(CreatePageRequest page)
         {
             var user = await GetAuthenticatedUserAsync();
+            if (user == null) return NotFound(new { Message = "Account not found" });
             var pageResponse = await _createPageFeature.Execute(page, user);
             if (pageResponse == null)
             {
@@ -46,6 +48,7 @@ namespace Notebook.Controllers
         public async Task<IActionResult> DeletePage(string id)
         {
             var user = await GetAuthenticatedUserAsync();
+            if (user == null) return NotFound(new { Message = "Account not found" });
             var success = await _deletePageFeature.Execute(id, user);
             if (!success)
             {
