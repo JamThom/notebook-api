@@ -75,6 +75,7 @@ builder.Services.AddScoped<LoginFeature>();
 builder.Services.AddScoped<DeletePageFeature>();
 builder.Services.AddScoped<DeleteNotebookFeature>();
 builder.Services.AddScoped<UpdateNotebookFeature>();
+builder.Services.AddScoped<GetAccountFeature>();
 
 var app = builder.Build();
 

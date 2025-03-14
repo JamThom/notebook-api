@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Features;
+using Notebook.Models;
 using Notebook.Models.Requests;
 
 namespace Notebook.Controllers
@@ -11,11 +12,13 @@ namespace Notebook.Controllers
         private readonly RegisterFeature _registerFeature;
         private readonly LoginFeature _loginFeature;
         private readonly LogoutFeature _logoutFeature;
+        private readonly GetAccountFeature _getAccountFeature;
 
-        public AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature)
+        public AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, GetAccountFeature getAccountFeature)
         {
             _registerFeature = registerFeature;
             _loginFeature = loginFeature;
+            _getAccountFeature = getAccountFeature;
             _logoutFeature = logoutFeature;
         }
 
@@ -59,6 +62,17 @@ namespace Notebook.Controllers
             {
                 return BadRequest(new { Message = "Invalid login attempt" });
             }
+        }
+
+        [HttpGet]
+        public IActionResult Get(User user)
+        {
+            var account = _getAccountFeature.Execute(user);
+            if (account == null)
+            {
+                return NotFound(new { Message = "Account not found" });
+            }
+            return Ok(account);
         }
 
         [HttpPost("logout")]
