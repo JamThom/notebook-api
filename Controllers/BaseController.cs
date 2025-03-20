@@ -20,6 +20,11 @@ namespace Notebook.Controllers
             return user;
         }
 
+        protected ActionResult AccountNotFound()
+        {
+            return NotFound(new { Message = "Account not found" });
+        }
+
         protected ActionResult ItemResponse<T>(T item) {
             return Ok(new GetItemResponse<T> { Item = item });
         }

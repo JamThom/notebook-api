@@ -48,7 +48,7 @@ namespace Notebook.Controllers
         public async Task<IActionResult> Put(string id, UpdateBookRequest book)
         {
             var user = await GetAuthenticatedUserAsync();
-            if (user == null) return NotFound(new { Message = "Account not found" });
+            if (user == null) return AccountNotFound();
             var updatedBook = await _updateBookFeature.Execute(id, book, user);
             if (updatedBook == false)
             {
@@ -61,7 +61,7 @@ namespace Notebook.Controllers
         public async Task<ActionResult<BookResponse>> GetBook(string id)
         {
             var user = await GetAuthenticatedUserAsync();
-            if (user == null) return NotFound(new { Message = "Account not found" });
+            if (user == null) return AccountNotFound();
             var bookResponse = await _getBookFeature.Execute(id, user);
             if (bookResponse == null)
             {
@@ -74,7 +74,7 @@ namespace Notebook.Controllers
         public async Task<IActionResult> Post(CreateBookRequest book)
         {
             var user = await GetAuthenticatedUserAsync();
-            if (user == null) return NotFound(new { Message = "Account not found" });
+            if (user == null) return AccountNotFound();
             var createdBook = await _createBookFeature.Execute(book, user);
             if (createdBook == null)
             {
@@ -87,7 +87,7 @@ namespace Notebook.Controllers
         public async Task<IActionResult> DeleteBook(string id)
         {
             var user = await GetAuthenticatedUserAsync();
-            if (user == null) return NotFound(new { Message = "Account not found" });
+            if (user == null) return AccountNotFound();
             var book = await _deleteBookFeature.Execute(id, user);
             if (book == false)
             {

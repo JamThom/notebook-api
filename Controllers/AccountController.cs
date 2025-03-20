@@ -57,22 +57,16 @@ namespace Notebook.Controllers
         [HttpGet()]
         public async Task<IActionResult> Get()
         {
-            var account = await GetAuthenticatedUserAsync();
-            if (account == null)
-            {
-                return BadRequest(new { Message = "Account not found" });
-            }
-            return ItemResponse(new AccountResponse { Id = account.Id, UserName = account.UserName, Email = account.Email });
+            var user = await GetAuthenticatedUserAsync();
+            if (user == null) return AccountNotFound();
+            return ItemResponse(new AccountResponse { Id = user.Id, UserName = user.UserName, Email = user.Email });
         }
 
         [HttpPut]
         public async Task<IActionResult> Update(UpdateAccountRequest account)
         {
             var user = await GetAuthenticatedUserAsync();
-            if (user == null)
-            {
-                return NotFound(new { Message = "Account not found" });
-            }
+            if (user == null) return AccountNotFound();
             var accountHasUpdated = await _updateAccountFeature.Execute(account, user);
             if (!accountHasUpdated)
             {
