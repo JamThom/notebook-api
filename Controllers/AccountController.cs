@@ -60,7 +60,7 @@ namespace Notebook.Controllers
             var account = await GetAuthenticatedUserAsync();
             if (account == null)
             {
-                return NotFound(new { Message = "Account not found" });
+                return BadRequest(new { Message = "Account not found" });
             }
             return ItemResponse(new AccountResponse { Id = account.Id, UserName = account.UserName, Email = account.Email });
         }
