@@ -25,24 +25,18 @@ namespace Notebook.Controllers
             return NotFound(new { Message = "Account not found" });
         }
 
-        protected ActionResult ItemResponse<T>(T item) {
+        protected ActionResult ItemResponse<T>(T item) where T : notnull
+        {
             return Ok(new GetItemResponse<T> { Item = item });
         }
 
-
-
-        protected ActionResult ListResponse<T>(List<T> items) {
+        protected ActionResult ListResponse<T>(List<T> items) where T : notnull {
             return Ok(new GetItemsResponse<T> { Items = items });
         }
 
-        protected ActionResult UpdatedResponse(string id, string message) {
-            return Ok(new Updated { Id = id, Message = message });
-        }
-
-        private class Updated
+        protected ActionResult CreatedResponse(string id)
         {
-            required public string Id { get; set; }
-            required public string Message { get; set; }
+            return Ok(id);
         }
 
         public class ErrorResponse

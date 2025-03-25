@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Notebook.Data;
 using Notebook.Models;
+using Notebook.Models.Domain;
 using Notebook.Models.Responses;
 
 namespace Notebook.Features
@@ -9,20 +10,26 @@ namespace Notebook.Features
     {
         private readonly ApplicationDbContext _ctx = context;
 
-        public async Task<AccountResponse?> Execute(User user)
+        public async Task<FeatureResult<AccountResponse>> Execute(User user)
         {
             var account = await _ctx.Users.FirstOrDefaultAsync(a => a.Id == user.Id);
 
             if (account == null)
             {
-                return null;
+                return new FeatureResult<AccountResponse>
+                {
+                    Error = ErrorType.NotFound
+                };
             }
 
-            return new AccountResponse
+            return new FeatureResult<AccountResponse>
             {
-                Id = account.Id,
-                UserName = account.UserName,
-                Email = account.Email,
+                Response = new AccountResponse
+                {
+                    Id = account.Id,
+                    UserName = account.UserName,
+                    Email = account.Email,
+                }
             };
         }
     }

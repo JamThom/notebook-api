@@ -1,5 +1,6 @@
 using Notebook.Data;
 using Notebook.Models;
+using Notebook.Models.Domain;
 using Notebook.Models.Requests;
 using Notebook.Models.Responses;
 
@@ -7,17 +8,32 @@ namespace Notebook.Features
 {
     public class CreateBookFeature : BaseFeature
     {
-        public CreateBookFeature(ApplicationDbContext ctx): base(ctx)
+        public CreateBookFeature(ApplicationDbContext ctx) : base(ctx)
         {
         }
-        public async Task<BookResponse> Execute(CreateBookRequest book, User user)
+
+        public async Task<FeatureResult<BookResponse>> Execute(CreateBookRequest book, User user)
         {
+            if (string.IsNullOrWhiteSpace(book.Name))
+            {
+                return new FeatureResult<BookResponse>
+                {
+                    Error = ErrorType.NoName
+                };
+            }
+
+            var existingBook = _ctx.Books.FirstOrDefault(b => b.Name == book.Name && b.UserId == user.Id);
+            if (existingBook != null)
+            {
+
+            }
+
             var createdBook = new Book
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = book.Name,
                 UserId = user.Id,
-                Pages = new HashSet<Page> {},
+                Pages = new HashSet<Page>(),
                 User = user
             };
 
@@ -39,14 +55,22 @@ namespace Notebook.Features
 
             await _ctx.SaveChangesAsync();
 
-            return new BookResponse {
-                Id = createdBook.Id,
-                Name = createdBook.Name,
-                Pages = createdBook.Pages.Select(p => new PageResponse {
-                    Id = p.Id,
-                    Index = p.Index,
-                    Content = p.Content
-                }).ToList()
+            return new FeatureResult<BookResponse>
+            {
+                Response = new BookResponse
+                {
+                    Id = createdBook.Id,
+                    Name = createdBook.Name,
+                    Pages = new List<PageResponse>
+                    {
+                        new PageResponse
+                        {
+                            Id = createdPage.Id,
+                            Index = createdPage.Index,
+                            Content = createdPage.Content
+                        }
+                    }
+                }
             };
         }
     }

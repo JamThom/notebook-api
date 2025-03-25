@@ -9,7 +9,7 @@ namespace Notebook.Features
         private readonly UserManager<User> _userManager = userManager;
         private readonly SignInManager<User> _signInManager = signInManager;
 
-        public async Task<User> Execute(RegisterRequest model)
+        public async Task<(string? userId, IdentityResult)> Execute(RegisterRequest model)
         {
             var user = new User()
             {
@@ -23,11 +23,7 @@ namespace Notebook.Features
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
             }
-            if (!result.Succeeded)
-            {
-                throw new Exception("Failed to create user");
-            }
-            return user;
+            return (user.Id, result);
         }
     }
 }

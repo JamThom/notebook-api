@@ -3,22 +3,26 @@ using Notebook.Models;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Models.Requests;
 using Notebook.Models.Responses;
+using Notebook.Models.Domain;
 
 namespace Notebook.Features
 {
     public class CreatePageFeature : BaseFeature
     {
-        public CreatePageFeature(ApplicationDbContext ctx): base(ctx)
+        public CreatePageFeature(ApplicationDbContext ctx) : base(ctx)
         {
         }
 
-        public async Task<PageResponse?> Execute(CreatePageRequest page, User user)
+        public async Task<FeatureResult<PageResponse>> Execute(CreatePageRequest page, User user)
         {
             var book = await _ctx.Books.Include(b => b.Pages).FirstOrDefaultAsync(b => b.Id == page.BookId && b.UserId == user.Id);
 
             if (book == null)
             {
-                return null;
+                return new FeatureResult<PageResponse>
+                {
+                    Error = ErrorType.NotFound
+                };
             }
 
             if (book.Pages == null)
@@ -40,11 +44,14 @@ namespace Notebook.Features
             _ctx.Pages.Add(createdPage);
             await _ctx.SaveChangesAsync();
 
-            return new PageResponse
+            return new FeatureResult<PageResponse>
             {
-                Id = createdPage.Id,
-                Index = createdPage.Index,
-                Content = createdPage.Content
+                Response = new PageResponse
+                {
+                    Id = createdPage.Id,
+                    Index = createdPage.Index,
+                    Content = createdPage.Content
+                }
             };
         }
     }

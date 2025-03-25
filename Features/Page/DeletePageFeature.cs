@@ -1,7 +1,7 @@
 using Notebook.Data;
 using Notebook.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Notebook.Models.Domain;
 
 namespace Notebook.Features
 {
@@ -11,7 +11,7 @@ namespace Notebook.Features
         {
         }
 
-        public async Task<bool> Execute(string pageId, User user)
+        public async Task<FeatureResult<bool>> Execute(string pageId, User user)
         {
             var page = await _ctx.Pages
                 .Include(p => p.Book)
@@ -19,13 +19,20 @@ namespace Notebook.Features
 
             if (page == null)
             {
-                return false;
+                return new FeatureResult<bool>
+                {
+                    Error = ErrorType.NotFound,
+                    Response = false
+                };
             }
 
             _ctx.Pages.Remove(page);
             await _ctx.SaveChangesAsync();
 
-            return true;
+            return new FeatureResult<bool>
+            {
+                Response = true
+            };
         }
     }
 }

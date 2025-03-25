@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Data;
 using Notebook.Models;
+using Notebook.Models.Domain;
 using Notebook.Models.Requests;
 using Notebook.Models.Responses;
 
@@ -18,14 +19,17 @@ namespace Notebook.Features
             _userManager = userManager;
         }
 
-        public async Task<Boolean> Execute(UpdateAccountRequest request, User user)
+        public async Task<FeatureResult<bool>> Execute(UpdateAccountRequest request, User user)
         {
 
             var account = await _ctx.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
 
             if (account == null)
             {
-                return false;
+                return new FeatureResult<bool>
+                {
+                    Error = ErrorType.NotFound
+                };
             }
 
             if (!string.IsNullOrEmpty(request.UserName))
@@ -33,7 +37,10 @@ namespace Notebook.Features
                 var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
                 if (userWithSameUserName != null && userWithSameUserName.Id != user.Id)
                 {
-                    return false;
+                    return new FeatureResult<bool>
+                    {
+                        Error = ErrorType.DuplicateName
+                    };
                 }
             }
 
@@ -42,13 +49,19 @@ namespace Notebook.Features
                 var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
                 if (userWithSameEmail != null && userWithSameEmail.Id != user.Id)
                 {
-                    return false;
+                    return new FeatureResult<bool>
+                    {
+                        Error = ErrorType.NoEmail
+                    };
                 }
             }
 
             await _ctx.SaveChangesAsync();
 
-            return true;
+            return new FeatureResult<bool>
+            {
+                Response = true
+            };
 
         }
     }

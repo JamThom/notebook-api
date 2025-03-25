@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Notebook.Features;
 using Notebook.Models.Responses;
+using Notebook.Models.Domain;
 
 namespace Notebook.Controllers
 {
@@ -23,12 +24,16 @@ namespace Notebook.Controllers
         {
             var user = await GetAuthenticatedUserAsync();
             if (user == null) return AccountNotFound();
-            var pageResponse = await _getPageFeature.Execute(id, user);
-            if (pageResponse == null)
+            var result = await _getPageFeature.Execute(id, user);
+            if (result.Error == ErrorType.NotFound)
             {
                 return NotFound();
             }
-            return ItemResponse(pageResponse);
+            if (result.Response == null)
+            {
+                return BadRequest(new ErrorResponse { Message = "Invalid request" });
+            }
+            return ItemResponse<PageResponse>(result.Response);
         }
 
         [HttpPost]
@@ -36,12 +41,16 @@ namespace Notebook.Controllers
         {
             var user = await GetAuthenticatedUserAsync();
             if (user == null) return AccountNotFound();
-            var pageResponse = await _createPageFeature.Execute(page, user);
-            if (pageResponse == null)
+            var result = await _createPageFeature.Execute(page, user);
+            if (result.Error == ErrorType.NotFound)
             {
-                return NotFound();
+                return NotFound("Book not found");
             }
-            return UpdatedResponse(pageResponse.Id, "Page created");
+            if (result.Response == null)
+            {
+                return BadRequest(new ErrorResponse { Message = "Invalid request" });
+            }
+            return Ok(result.Response.Id);
         }
 
         [HttpDelete("{id}")]
@@ -49,12 +58,16 @@ namespace Notebook.Controllers
         {
             var user = await GetAuthenticatedUserAsync();
             if (user == null) return AccountNotFound();
-            var success = await _deletePageFeature.Execute(id, user);
-            if (!success)
+            var result = await _deletePageFeature.Execute(id, user);
+            if (result.Error == ErrorType.NotFound)
             {
                 return NotFound();
             }
-            return UpdatedResponse(id, "Page deleted");
+            if (result.Error != null)
+            {
+                return BadRequest(new ErrorResponse { Message = "Invalid request" });
+            }
+            return Ok();
         }
     }
 }

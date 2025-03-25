@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Features;
 using Notebook.Models;
+using Notebook.Models.Domain;
 using Notebook.Models.Requests;
 using Notebook.Models.Responses;
 
@@ -14,18 +15,17 @@ namespace Notebook.Controllers
         private readonly RegisterFeature _registerFeature = registerFeature;
         private readonly LoginFeature _loginFeature = loginFeature;
         private readonly LogoutFeature _logoutFeature = logoutFeature;
-        private readonly GetAccountFeature _getAccountFeature = getAccountFeature;
         private readonly UpdateAccountFeature _updateAccountFeature = updateAccountFeature;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
-            try {
-                var user = await _registerFeature.Execute(model);
-                return UpdatedResponse(user.Id, "Registration successful");
-            } catch (Exception e) {
-                return BadRequest(new { Message = "An error occurred during registration", Error = e.Message });
-            }
+                var (userId, result) = await _registerFeature.Execute(model);
+                if (result.Succeeded) {
+                    if (userId == null) return BadRequest(new { Message = "An error occurred during registration" });
+                    return Ok(userId);
+                }
+                return BadRequest(new { Message = "An error occurred during registration", Error = result.Errors.ToString() });
         }
 
         [HttpPost("login")]
@@ -67,12 +67,16 @@ namespace Notebook.Controllers
         {
             var user = await GetAuthenticatedUserAsync();
             if (user == null) return AccountNotFound();
-            var accountHasUpdated = await _updateAccountFeature.Execute(account, user);
-            if (!accountHasUpdated)
+            var result = await _updateAccountFeature.Execute(account, user);
+            if (result.Error == ErrorType.NotFound)
             {
                 return NotFound(new ErrorResponse { Message = "Account not found" });
             }
-            return UpdatedResponse(user.Id, "Account updated");
+            if (result.Error != null)
+            {
+                return BadRequest(new ErrorResponse { Message = "Invalid request" });
+            }
+            return Ok();
         }
 
         [HttpPost("logout")]
