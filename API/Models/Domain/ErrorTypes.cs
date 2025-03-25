@@ -2,14 +2,10 @@ namespace Notebook.Models.Domain
 {
     public enum ErrorType
     {
-        None,
         DuplicateName,
+        DuplicateEmail,
         NameEmpty,
-        InvalidRequest,
         NotFound,
-        Unauthorized,
-        Unknown,
-        NoName,
-        NoEmail
+        EmailEmpty
     }
 }

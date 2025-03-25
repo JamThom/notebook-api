@@ -66,7 +66,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<GetBooksFeature>();
 builder.Services.AddScoped<GetBookFeature>();
-builder.Services.AddScoped<GetPageFeature>();
 builder.Services.AddScoped<CreatePageFeature>();
 builder.Services.AddScoped<CreateBookFeature>();
 builder.Services.AddScoped<LogoutFeature>();

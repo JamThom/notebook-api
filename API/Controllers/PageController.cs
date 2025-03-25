@@ -12,29 +12,10 @@ namespace Notebook.Controllers
     [ApiController]
     [Authorize]
     [Route("api/pages")]
-    public class PageController(GetPageFeature getPageFeature, CreatePageFeature createPageFeature, UserManager<User> userManager, DeletePageFeature deletePageFeature) : BaseController(userManager)
+    public class PageController(CreatePageFeature createPageFeature, UserManager<User> userManager, DeletePageFeature deletePageFeature) : BaseController(userManager)
     {
-
-        private readonly GetPageFeature _getPageFeature = getPageFeature;
         private readonly CreatePageFeature _createPageFeature = createPageFeature;
         private readonly DeletePageFeature _deletePageFeature = deletePageFeature;
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PageResponse>> GetPage(string id)
-        {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _getPageFeature.Execute(id, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound();
-            }
-            if (result.Response == null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return ItemResponse<PageResponse>(result.Response);
-        }
 
         [HttpPost]
         public async Task<ActionResult<PageResponse>> Post(CreatePageRequest page)

@@ -10,7 +10,7 @@ namespace Notebook.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, GetAccountFeature getAccountFeature, UserManager<User> userManager, UpdateAccountFeature updateAccountFeature) : BaseController(userManager)
+    public class AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, UserManager<User> userManager, UpdateAccountFeature updateAccountFeature) : BaseController(userManager)
     {
         private readonly RegisterFeature _registerFeature = registerFeature;
         private readonly LoginFeature _loginFeature = loginFeature;

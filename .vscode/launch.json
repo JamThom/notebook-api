@@ -6,9 +6,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Release/net9.0/Notebook.dll",
+            "program": "${workspaceFolder}/API/bin/Release/net9.0/Notebook.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/API",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
@@ -18,7 +18,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
+                "/Views": "${workspaceFolder}/API/Views"
             },
             "justMyCode": true
         }

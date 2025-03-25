@@ -13,6 +13,14 @@ namespace Notebook.Features
 
         public async Task<FeatureResult<bool>> Execute(string bookId, User user)
         {
+            if (string.IsNullOrEmpty(bookId))
+            {
+                return new FeatureResult<bool>
+                {
+                    Error = ErrorType.NotFound
+                };
+            }
+
             var book = await _ctx.Books.FirstOrDefaultAsync(p => p.Id == bookId);
             if (book == null || book.UserId != user.Id)
             {

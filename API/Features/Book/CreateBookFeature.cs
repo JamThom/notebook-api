@@ -18,14 +18,17 @@ namespace Notebook.Features
             {
                 return new FeatureResult<BookResponse>
                 {
-                    Error = ErrorType.NoName
+                    Error = ErrorType.NameEmpty
                 };
             }
 
             var existingBook = _ctx.Books.FirstOrDefault(b => b.Name == book.Name && b.UserId == user.Id);
             if (existingBook != null)
             {
-
+                return new FeatureResult<BookResponse>
+                {
+                    Error = ErrorType.DuplicateName
+                };
             }
 
             var createdBook = new Book

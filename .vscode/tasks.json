@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Notebook.csproj"
+                "${workspaceFolder}/API/Notebook.csproj"
             ],
             "problemMatcher": "$msCompile",
             "isBackground": true,

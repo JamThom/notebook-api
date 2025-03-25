@@ -51,7 +51,7 @@ namespace Notebook.Features
                 {
                     return new FeatureResult<bool>
                     {
-                        Error = ErrorType.NoEmail
+                        Error = ErrorType.EmailEmpty
                     };
                 }
             }
