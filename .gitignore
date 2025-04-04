@@ -3,3 +3,4 @@ bin
 API/obj
 API/bin
 .fake
+.vscode
