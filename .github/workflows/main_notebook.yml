@@ -65,3 +65,6 @@ jobs:
           app-name: 'notebook'
           slot-name: 'Production'
           package: .
+          enable-oidc: true
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.DEFAULT_CONNECTION_STRING }}
