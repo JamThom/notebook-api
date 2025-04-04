@@ -19,6 +19,7 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    Console.WriteLine($"Connection string: {connectionString}");
     options.UseSqlServer(connectionString);
 });
 builder.Services.AddIdentity<User, IdentityRole>(options =>
