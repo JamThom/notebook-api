@@ -19,8 +19,6 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     var connectionString = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION_STRING");
-    var altConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTION_STRING");
-    Console.WriteLine($"Xonnection string: {connectionString} {altConnectionString}");
     options.UseSqlServer(connectionString);
 });
 builder.Services.AddIdentity<User, IdentityRole>(options =>
