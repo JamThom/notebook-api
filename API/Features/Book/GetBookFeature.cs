@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Notebook.Data;
 using Notebook.Models;
@@ -16,7 +15,9 @@ namespace Notebook.Features
 
         public async Task<FeatureResult<BookResponse>> Execute(string id, User user)
         {
-            var book = await _ctx.Books.FirstOrDefaultAsync(b => b.Id == id && b.UserId == user.Id);
+            var book = await _ctx.Books
+                .Include(b => b.Pages)
+                .FirstOrDefaultAsync(b => b.Id == id && b.UserId == user.Id);
 
             var pages = await _ctx.Pages
                 .Include(p => p.Book)
@@ -38,7 +39,7 @@ namespace Notebook.Features
                 {
                     Id = book.Id,
                     Name = book.Name,
-                    Pages = pages?.Select(p => new PageResponse
+                    Pages = book.Pages?.Select(p => new PageResponse
                     {
                         Id = p.Id,
                         Index = p.Index,
