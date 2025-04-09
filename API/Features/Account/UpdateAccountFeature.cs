@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Notebook.Constants;
 using Notebook.Data;
 using Notebook.Models;
 using Notebook.Models.Domain;
 using Notebook.Models.Requests;
-using Notebook.Models.Responses;
+using Xunit.Sdk;
 
 namespace Notebook.Features
 {
@@ -28,7 +29,14 @@ namespace Notebook.Features
             {
                 return new FeatureResult<bool>
                 {
-                    Error = ErrorType.NotFound
+                    ErrorMessage = ErrorMessages.UserNotFound,
+                };
+            }
+
+            if (string.IsNullOrEmpty(request.UserName)) {
+                return new FeatureResult<bool>
+                {
+                    ErrorMessage = ErrorMessages.UserNameRequired,
                 };
             }
 
@@ -39,7 +47,7 @@ namespace Notebook.Features
                 {
                     return new FeatureResult<bool>
                     {
-                        Error = ErrorType.DuplicateName
+                        ErrorMessage = ErrorMessages.UserNameAlreadyExists,
                     };
                 }
             }
@@ -51,9 +59,11 @@ namespace Notebook.Features
                 {
                     return new FeatureResult<bool>
                     {
-                        Error = ErrorType.EmailEmpty
+                        ErrorMessage = ErrorMessages.EmailAlreadyExists,
                     };
                 }
+            } else {
+                account.Email = request.Email;
             }
 
             await _ctx.SaveChangesAsync();

@@ -3,6 +3,7 @@ using Notebook.Models.Requests;
 using Notebook.Features;
 using Notebook.Models.Domain;
 using Tests.Helpers;
+using Notebook.Constants;
 
 namespace Tests.Features.BookFeature
 {
@@ -22,7 +23,7 @@ namespace Tests.Features.BookFeature
 
             // Assert
             Assert.Null(result.Response);
-            Assert.Equal(ErrorType.NameEmpty, result.Error);
+            Assert.Equal(ErrorMessages.BookNameRequired, result.ErrorMessage);
         }
 
         [Fact]
@@ -43,7 +44,7 @@ namespace Tests.Features.BookFeature
 
             // Assert
             Assert.Null(result.Response);
-            Assert.Equal(ErrorType.DuplicateName, result.Error);
+            Assert.Equal(ErrorMessages.BookNameAlreadyExists, result.ErrorMessage);
         }
 
         [Fact]
@@ -59,10 +60,7 @@ namespace Tests.Features.BookFeature
             var result = await feature.Execute(request, user);
 
             // Assert
-            Assert.NotNull(result.Response);
-            Assert.Equal("ValidBook", result.Response.Name);
-            Assert.NotEmpty(result.Response.Pages);
-            Assert.Equal(0, result.Response.Pages.First().Index);
+            Assert.IsType<string>(result.Response);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Notebook.Constants;
 using Notebook.Data;
 using Notebook.Models;
 using Notebook.Models.Domain;
@@ -20,7 +21,7 @@ namespace Notebook.Features
             {
                 return new FeatureResult<bool>
                 {
-                    Error = ErrorType.NameEmpty
+                    ErrorMessage = ErrorMessages.BookNameRequired
                 };
             }
 
@@ -38,7 +39,7 @@ namespace Notebook.Features
             {
                 return new FeatureResult<bool>
                 {
-                    Error = ErrorType.DuplicateName
+                    ErrorMessage = ErrorMessages.BookNameAlreadyExists
                 };
             }
 

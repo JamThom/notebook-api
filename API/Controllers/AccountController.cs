@@ -65,18 +65,7 @@ namespace Notebook.Controllers
         [HttpPut]
         public async Task<IActionResult> Update(UpdateAccountRequest account)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _updateAccountFeature.Execute(account, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound(new ErrorResponse { Message = "Account not found" });
-            }
-            if (result.Error != null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return Ok();
+            return await HandleFeatureExecution((user) => _updateAccountFeature.Execute(account, user));
         }
 
         [HttpPost("logout")]

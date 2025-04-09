@@ -12,7 +12,11 @@ namespace Notebook.Controllers
     [ApiController]
     [Authorize]
     [Route("api/pages")]
-    public class PageController(CreatePageFeature createPageFeature, UserManager<User> userManager, DeletePageFeature deletePageFeature) : BaseController(userManager)
+    public class PageController(
+        CreatePageFeature createPageFeature,
+        UserManager<User> userManager,
+        DeletePageFeature deletePageFeature
+    ) : BaseController(userManager)
     {
         private readonly CreatePageFeature _createPageFeature = createPageFeature;
         private readonly DeletePageFeature _deletePageFeature = deletePageFeature;
@@ -20,35 +24,13 @@ namespace Notebook.Controllers
         [HttpPost]
         public async Task<ActionResult<PageResponse>> Post(CreatePageRequest page)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _createPageFeature.Execute(page, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound("Book not found");
-            }
-            if (result.Response == null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return Ok(result.Response.Id);
+            return await HandleFeatureExecution((user) => _createPageFeature.Execute(page, user));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePage(string id)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _deletePageFeature.Execute(id, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound();
-            }
-            if (result.Error != null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return Ok();
+            return await HandleFeatureExecution((user) => _deletePageFeature.Execute(id, user));
         }
     }
 }

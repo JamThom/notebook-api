@@ -33,92 +33,31 @@ namespace Notebook.Controllers
         [HttpGet()]
         public async Task<ActionResult<List<BooksResponse>>> GetBooks()
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return NotFound(new { Message = "Account not found" });
-            var result = await _getBooksFeature.Execute(user);
-            
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound();
-            }
-            if (result.Response == null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-
-            return ListResponse(result.Response);
+            return await HandleFeatureExecution((user) => _getBooksFeature.Execute(user));
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(string id, UpdateBookRequest book)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _updateBookFeature.Execute(id, book, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound();
-            }
-            if (result.Error != null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return Ok();
+            return await HandleFeatureExecution((user) => _updateBookFeature.Execute(id, book, user));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<BookResponse>> GetBook(string id)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _getBookFeature.Execute(id, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound();
-            }
-            if (result.Response == null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return ItemResponse<BookResponse>(result.Response);
+            return await HandleFeatureExecution((user) => _getBookFeature.Execute(id, user));
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(CreateBookRequest book)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _createBookFeature.Execute(book, user);
-            if (result.Error == ErrorType.NameEmpty)
-            {
-                return BadRequest(new ErrorResponse { Message = "Name cannot be empty" });
-            }
-            if (result.Error == ErrorType.DuplicateName)
-            {
-                return BadRequest(new ErrorResponse { Message = "Name already exists" });
-            }
-            if (result.Response == null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return CreatedResponse(result.Response.Id);
+            return await HandleFeatureExecution((user) => _createBookFeature.Execute(book, user));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(string id)
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            var result = await _deleteBookFeature.Execute(id, user);
-            if (result.Error == ErrorType.NotFound)
-            {
-                return NotFound();
-            }
-            if (result.Error != null)
-            {
-                return BadRequest(new ErrorResponse { Message = "Invalid request" });
-            }
-            return Ok();
+            return await HandleFeatureExecution((user) => _deleteBookFeature.Execute(id, user));
         }
     }
 }

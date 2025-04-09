@@ -1,3 +1,4 @@
+using Notebook.Constants;
 using Notebook.Data;
 using Notebook.Models;
 using Notebook.Models.Domain;
@@ -12,22 +13,22 @@ namespace Notebook.Features
         {
         }
 
-        public async Task<FeatureResult<BookResponse>> Execute(CreateBookRequest book, User user)
+        public async Task<FeatureResult<string>> Execute(CreateBookRequest book, User user)
         {
             if (string.IsNullOrWhiteSpace(book.Name))
             {
-                return new FeatureResult<BookResponse>
+                return new FeatureResult<string>
                 {
-                    Error = ErrorType.NameEmpty
+                    ErrorMessage = ErrorMessages.BookNameRequired
                 };
             }
 
             var existingBook = _ctx.Books.FirstOrDefault(b => b.Name == book.Name && b.UserId == user.Id);
             if (existingBook != null)
             {
-                return new FeatureResult<BookResponse>
+                return new FeatureResult<string>
                 {
-                    Error = ErrorType.DuplicateName
+                    ErrorMessage = ErrorMessages.BookNameAlreadyExists
                 };
             }
 
@@ -58,22 +59,9 @@ namespace Notebook.Features
 
             await _ctx.SaveChangesAsync();
 
-            return new FeatureResult<BookResponse>
+            return new FeatureResult<string>
             {
-                Response = new BookResponse
-                {
-                    Id = createdBook.Id,
-                    Name = createdBook.Name,
-                    Pages = new List<PageResponse>
-                    {
-                        new PageResponse
-                        {
-                            Id = createdPage.Id,
-                            Index = createdPage.Index,
-                            Content = createdPage.Content
-                        }
-                    }
-                }
+                Response = createdBook.Id
             };
         }
     }

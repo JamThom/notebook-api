@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Notebook.Models;
+using Notebook.Models.Domain;
 
 namespace Notebook.Controllers
 {
@@ -18,6 +19,16 @@ namespace Notebook.Controllers
             var user = await _userManager.GetUserAsync(User);
             
             return user;
+        }
+
+        protected async Task<ActionResult> HandleFeatureExecution<TResponse>(
+            Func<User, Task<FeatureResult<TResponse>>> featureExecution)
+        {
+            var user = await GetAuthenticatedUserAsync();
+            if (user == null) return AccountNotFound();
+            var result = await featureExecution(user);
+            if (result.Error != null) return ErrorResponse(result);
+            return Ok(result.Response);
         }
 
         protected ActionResult AccountNotFound()
@@ -39,10 +50,17 @@ namespace Notebook.Controllers
             return Ok(id);
         }
 
-        public class ErrorResponse
+        protected ActionResult ErrorResponse<T>(FeatureResult<T> result)
         {
-            required public string Message { get; set; }
-            public string? Error { get; set; }
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+            {
+                return BadRequest(new { Message = result.ErrorMessage });
+            }
+            if (result.Error == ErrorType.NotFound)
+            {
+                return NotFound();
+            }
+            return BadRequest(new { Message = "Invalid request" });
         }
 
         private class GetItemResponse<T>
