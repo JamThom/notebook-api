@@ -24,13 +24,13 @@ namespace Notebook.Controllers
         [HttpPost]
         public async Task<ActionResult<PageResponse>> Post(CreatePageRequest page)
         {
-            return await HandleFeatureExecution((user) => _createPageFeature.Execute(page, user));
+            return await HandleFeatureExecution(user => _createPageFeature.Execute(page, user));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePage(string id)
         {
-            return await HandleFeatureExecution((user) => _deletePageFeature.Execute(id, user));
+            return await HandleFeatureExecution(user => _deletePageFeature.Execute(id, user));
         }
     }
 }

@@ -36,21 +36,7 @@ namespace Notebook.Controllers
             return NotFound(new { Message = "Account not found" });
         }
 
-        protected ActionResult ItemResponse<T>(T item) where T : notnull
-        {
-            return Ok(new GetItemResponse<T> { Item = item });
-        }
-
-        protected ActionResult ListResponse<T>(List<T> items) where T : notnull {
-            return Ok(new GetItemsResponse<T> { Items = items });
-        }
-
-        protected ActionResult CreatedResponse(string id)
-        {
-            return Ok(id);
-        }
-
-        protected ActionResult ErrorResponse<T>(FeatureResult<T> result)
+        private protected ActionResult ErrorResponse<T>(FeatureResult<T> result)
         {
             if (!string.IsNullOrEmpty(result.ErrorMessage))
             {
@@ -61,16 +47,6 @@ namespace Notebook.Controllers
                 return NotFound();
             }
             return BadRequest(new { Message = "Invalid request" });
-        }
-
-        private class GetItemResponse<T>
-        {
-            public required T Item { get; set; }
-        }
-
-        private class GetItemsResponse<T>
-        {
-            public required List<T> Items { get; set; }
         }
     }
 }

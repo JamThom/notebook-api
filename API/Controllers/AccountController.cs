@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Notebook.Constants;
 using Notebook.Features;
 using Notebook.Models;
 using Notebook.Models.Domain;
@@ -10,22 +11,24 @@ namespace Notebook.Controllers
 {
     [Route("api/account")]
     [ApiController]
-    public class AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, UserManager<User> userManager, UpdateAccountFeature updateAccountFeature) : BaseController(userManager)
+    public class AccountController(RegisterFeature registerFeature, LoginFeature loginFeature, LogoutFeature logoutFeature, UserManager<User> userManager, UpdateAccountFeature updateAccountFeature, GetAccountFeature getAccountFeature)
+        : BaseController(userManager)
     {
         private readonly RegisterFeature _registerFeature = registerFeature;
         private readonly LoginFeature _loginFeature = loginFeature;
         private readonly LogoutFeature _logoutFeature = logoutFeature;
         private readonly UpdateAccountFeature _updateAccountFeature = updateAccountFeature;
+        private readonly GetAccountFeature _getAccountFeature = getAccountFeature;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest model)
         {
                 var (userId, result) = await _registerFeature.Execute(model);
                 if (result.Succeeded) {
-                    if (userId == null) return BadRequest(new { Message = "An error occurred during registration" });
+                    if (userId == null) return BadRequest(new { Message = ErrorMessages.ErrorOccurredDuringRegistration });
                     return Ok(userId);
                 }
-                return BadRequest(new { Message = "An error occurred during registration", Error = result.Errors.ToString() });
+                return BadRequest(new { Message = ErrorMessages.ErrorOccurredDuringRegistration, Error = result.Errors.ToString() });
         }
 
         [HttpPost("login")]
@@ -38,28 +41,26 @@ namespace Notebook.Controllers
             }
             else if (result.IsLockedOut)
             {
-                return BadRequest(new { Message = "User account locked out" });
+                return BadRequest(new { Message = ErrorMessages.UserLockedOut });
             }
             else if (result.IsNotAllowed)
             {
-                return BadRequest(new { Message = "User is not allowed to sign in" });
+                return BadRequest(new { Message = ErrorMessages.UserNotAllowed });
             }
             else if (result.RequiresTwoFactor)
             {
-                return BadRequest(new { Message = "Two-factor authentication is required" });
+                return BadRequest(new { Message = ErrorMessages.TwoFactorRequired });
             }
             else
             {
-                return BadRequest(new { Message = "Invalid login attempt" });
+                return BadRequest(new { Message = ErrorMessages.InvalidLoginAttempt });
             }
         }
 
         [HttpGet()]
         public async Task<IActionResult> Get()
         {
-            var user = await GetAuthenticatedUserAsync();
-            if (user == null) return AccountNotFound();
-            return ItemResponse(new AccountResponse { Id = user.Id, UserName = user.UserName, Email = user.Email });
+            return await HandleFeatureExecution((user) => _getAccountFeature.Execute(user));
         }
 
         [HttpPut]
