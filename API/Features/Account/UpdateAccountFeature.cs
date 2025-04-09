@@ -52,19 +52,7 @@ namespace Notebook.Features
                 }
             }
 
-            if (!string.IsNullOrEmpty(request.Email))
-            {
-                var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
-                if (userWithSameEmail != null && userWithSameEmail.Id != user.Id)
-                {
-                    return new FeatureResult<bool>
-                    {
-                        ErrorMessage = ErrorMessages.EmailAlreadyExists,
-                    };
-                }
-            } else {
-                account.Email = request.Email;
-            }
+            account.UserName = request.UserName;
 
             await _ctx.SaveChangesAsync();
 
